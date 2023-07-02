@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { RegisterType } from "../../types/auth/authTypes";
+import { Link } from "react-router-dom";
 
 const RegisterForm = () => {
   const {
@@ -94,6 +95,12 @@ const RegisterForm = () => {
         >
           Create my Account
         </button>
+      </div>
+      <div className="flex gap-3">
+        <span className="text-zinc-400">Already have an account?</span>
+        <Link className="underline text-blue-600" to="/login">
+          Sign in
+        </Link>
       </div>
     </form>
   );

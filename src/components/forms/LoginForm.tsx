@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { LoginType } from "../../types/auth/authTypes";
+import { Link } from "react-router-dom";
 const LoginForm = () => {
   const {
     register,
@@ -45,13 +46,19 @@ const LoginForm = () => {
         />
       </div>
 
-      <div className="w-full h-[52px]">
+      <div className="w-full">
         <button
           type="submit"
           className="bg-[#0000FF] hover:bg-[#1414ff] w-full rounded-md p-3"
         >
           Login
         </button>
+      </div>
+      <div className="flex gap-3">
+        <span className="text-zinc-400">Don't have an account?</span>
+        <Link className="underline text-blue-600" to="/register">
+          Register
+        </Link>
       </div>
     </form>
   );
