@@ -27,7 +27,7 @@ const Sidebar = () => {
         >
           <div className="flex flex-col h-full w-full items-start">
             <div className="flex items-center h-full w-full">
-              <div className="bg-red-500 w-[39px] h-[34px] rounded-full"></div>
+              <div className="bg-blue-500 w-[39px] h-[34px] rounded-full"></div>
               <div className="ml-4 flex flex-col items-start w-full">
                 <p className="font-semibold text-sm">Hardswap</p>
                 <span className="text-sm font-light text-zinc-400">
