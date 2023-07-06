@@ -9,3 +9,8 @@ export type LoginType = {
   username: string;
   password: string;
 };
+
+export type LoginResponse = {
+  success: boolean;
+  errorMessage: string;
+};

@@ -1,7 +1,21 @@
 import { useForm } from "react-hook-form";
 import { LoginType } from "../../types/auth/authTypes";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginRequest } from "../../api/auth/login";
+import { useState } from "react";
 const LoginForm = () => {
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const submitForm = async (formValues: LoginType) => {
+    const data = await loginRequest(formValues);
+
+    if (!data.success) {
+      setError(data.errorMessage);
+      return;
+    }
+    navigate("/conversations");
+  };
   const {
     register,
     handleSubmit,
@@ -12,11 +26,10 @@ const LoginForm = () => {
       password: "",
     },
   });
+
   return (
     <form
-      onSubmit={handleSubmit((data) => {
-        console.log(data);
-      })}
+      onSubmit={handleSubmit(submitForm)}
       className="flex flex-col gap-6 items-center w-[450px] h-[350px]"
     >
       <div className="h-[52px] w-full mb-4">
