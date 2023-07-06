@@ -1,8 +1,20 @@
 import { useForm } from "react-hook-form";
 import { RegisterType } from "../../types/auth/authTypes";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { registerRequest } from "../../api/auth/register";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
+  const submitForm = async (formValues: RegisterType) => {
+    try {
+      const data = await registerRequest(formValues);
+      if (data.success) {
+        navigate("/login");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const {
     register,
     handleSubmit,
@@ -18,9 +30,7 @@ const RegisterForm = () => {
 
   return (
     <form
-      onSubmit={handleSubmit((data) => {
-        console.log(data);
-      })}
+      onSubmit={handleSubmit(submitForm)}
       className="flex flex-col gap-6 items-center w-[450px] h-[350px]"
     >
       <div className="h-[52px] w-full">

@@ -1,10 +1,18 @@
 import { BsChatSquareDots } from "react-icons/bs";
 import { useEffect } from "react";
+import { ConversationResponse } from "../types/conversations/conversationsTypes";
 
-const Sidebar = () => {
+interface Props {
+  conversations: ConversationResponse[];
+}
+
+const Sidebar: React.FC<Props> = ({ conversations }) => {
   useEffect(() => {
     console.log("hi, lets fetch convo list");
   }, []);
+
+  if (conversations === undefined || conversations.length === 0)
+    return <div>No conversations</div>;
 
   return (
     <div className="hidden md:flex flex-col h-full w-[300px] border-r-[1px] border-zinc-800">
@@ -21,7 +29,27 @@ const Sidebar = () => {
       {/* FLYTTA UNDERLIGGANDE DEL TILL EN EGEN KOMPONENT */}
       {/* conversation-item wrapper */}
       <div className="flex flex-col mt-6 gap-3">
-        <div
+        {conversations.map((conversation) => (
+          <div
+            className="flex flex-col items-center justify-between p-3 h-[80px] hover:cursor-pointer 
+          hover:bg-zinc-800 mx-2 rounded-md"
+          >
+            <div className="flex flex-col h-full w-full items-start">
+              <div className="flex items-center h-full w-full">
+                <div className="bg-blue-500 w-[39px] h-[34px] rounded-full"></div>
+                <div className="ml-4 flex flex-col items-start w-full">
+                  <p className="font-semibold text-sm">
+                    {conversation.conversationDetails.recipient}
+                  </p>
+                  <span className="text-sm font-light text-zinc-400">
+                    Yo, you need to check t...
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+        {/* <div
           className="flex flex-col items-center justify-between p-3 h-[80px] hover:cursor-pointer 
           hover:bg-zinc-800 mx-2 rounded-md"
         >
@@ -53,7 +81,7 @@ const Sidebar = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

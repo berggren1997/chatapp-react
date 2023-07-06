@@ -4,8 +4,8 @@ import ConversationPanel from "../components/conversations/ConversationPanel";
 const HomePage = () => {
   return (
     <>
-      <Sidebar />
-      <ConversationPanel />
+      {/* <Sidebar /> */}
+      {/* <ConversationPanel /> */}
     </>
   );
 };
