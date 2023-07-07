@@ -1,12 +1,39 @@
 import { RxHamburgerMenu } from "react-icons/rx";
+import { ConversationResponse } from "../../types/conversations/conversationsTypes";
+import { useState, useEffect } from "react";
+import { meRequest } from "../../api/auth/me";
 
-const ConversationPanelHeader = () => {
+interface Props {
+  conversation: ConversationResponse | undefined;
+}
+
+const ConversationPanelHeader: React.FC<Props> = ({ conversation }) => {
+  const [currentUser, setCurrentUser] = useState("");
+
+  const sendMeRequest = async () => {
+    const data = await meRequest();
+    if (data?.username) {
+      setCurrentUser(data.username);
+    }
+  };
+  useEffect(() => {
+    sendMeRequest();
+  }, []);
+
   return (
     <div className="flex items-center border-b-[1px] border-zinc-800 mx-6 h-[70px]">
       <div className="flex justify-between items-center w-full">
         <div className="flex items-center">
-          <div className="bg-red-500 w-[45px] h-[45px] rounded-full text-center"></div>
-          <h2 className="ml-4 text-lg">restrix@gmail.com</h2>
+          {currentUser && conversation && (
+            <>
+              <div className="bg-red-500 w-[45px] h-[45px] rounded-full text-center"></div>
+              <h2 className="ml-4 text-lg">
+                {conversation.conversationDetails.creator === currentUser
+                  ? conversation.conversationDetails.recipient
+                  : conversation.conversationDetails.creator}
+              </h2>
+            </>
+          )}
         </div>
         <RxHamburgerMenu className="block md:hidden w-[32px] h-[24px] hover:cursor-pointer" />
       </div>

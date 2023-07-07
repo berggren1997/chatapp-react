@@ -1,12 +1,25 @@
 import { BsChatSquareDots } from "react-icons/bs";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ConversationResponse } from "../types/conversations/conversationsTypes";
 
 interface Props {
   conversations: ConversationResponse[];
+  setSelectedConversation: (conversationDetails: ConversationResponse) => void;
 }
 
-const Sidebar: React.FC<Props> = ({ conversations }) => {
+const Sidebar: React.FC<Props> = ({
+  conversations,
+  setSelectedConversation,
+}) => {
+  const [clickedConversation, setClickedConversation] = useState("");
+
+  const handleClickedConversation = (conversation: ConversationResponse) => {
+    setClickedConversation(conversation.id);
+    setSelectedConversation(conversation);
+    // Here we also want to do something else with the conversationId, like navigating to conversations/conversationId,
+    // and from there on that page, we want to fetch the messages for that conversation
+  };
+
   useEffect(() => {
     console.log("hi, lets fetch convo list");
   }, []);
@@ -31,8 +44,12 @@ const Sidebar: React.FC<Props> = ({ conversations }) => {
       <div className="flex flex-col mt-6 gap-3">
         {conversations.map((conversation) => (
           <div
-            className="flex flex-col items-center justify-between p-3 h-[80px] hover:cursor-pointer 
-          hover:bg-zinc-800 mx-2 rounded-md"
+            key={conversation.id}
+            onClick={() => handleClickedConversation(conversation)}
+            className={`flex flex-col items-center justify-between p-3 h-[80px] hover:cursor-pointer 
+          hover:bg-zinc-800 mx-2 rounded-md ${
+            conversation.id === clickedConversation && "bg-zinc-800"
+          }`}
           >
             <div className="flex flex-col h-full w-full items-start">
               <div className="flex items-center h-full w-full">
@@ -49,39 +66,6 @@ const Sidebar: React.FC<Props> = ({ conversations }) => {
             </div>
           </div>
         ))}
-        {/* <div
-          className="flex flex-col items-center justify-between p-3 h-[80px] hover:cursor-pointer 
-          hover:bg-zinc-800 mx-2 rounded-md"
-        >
-          <div className="flex flex-col h-full w-full items-start">
-            <div className="flex items-center h-full w-full">
-              <div className="bg-blue-500 w-[39px] h-[34px] rounded-full"></div>
-              <div className="ml-4 flex flex-col items-start w-full">
-                <p className="font-semibold text-sm">Hardswap</p>
-                <span className="text-sm font-light text-zinc-400">
-                  Yo, you need to check t...
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div
-          className="flex flex-col items-center justify-between p-3 h-[80px] hover:cursor-pointer 
-          hover:bg-zinc-800 mx-2 rounded-md"
-        >
-          <div className="flex flex-col h-full w-full items-start">
-            <div className="flex items-center h-full w-full">
-              <div className="bg-red-500 w-[39px] h-[34px] rounded-full"></div>
-              <div className="ml-4 flex flex-col items-start w-full">
-                <p className="font-semibold text-sm">Restrix</p>
-                <span className="text-sm font-light text-zinc-400">
-                  Did you see what happ...
-                </span>
-              </div>
-            </div>
-          </div>
-        </div> */}
       </div>
     </div>
   );

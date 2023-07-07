@@ -9,10 +9,17 @@ import { ConversationResponse } from "../../types/conversations/conversationsTyp
 import Sidebar from "../Sidebar";
 
 const ConversationPanel = () => {
-  const [username, setUsername] = useState("");
+  const [selectedConversation, setSelectedConversation] =
+    useState<ConversationResponse>();
   const [conversations, setConversations] = useState<ConversationResponse[]>(
     []
   );
+
+  const handleSelectedConversation = (conversation: ConversationResponse) => {
+    console.log("clicked convesation: ");
+    console.log(conversation);
+    setSelectedConversation(conversation);
+  };
 
   const fetchConversationDetails = async () => {
     try {
@@ -22,27 +29,18 @@ const ConversationPanel = () => {
       setConversations(conversationData);
     } catch (error) {}
   };
-
-  if (conversations) {
-    console.log(conversations);
-  }
-
-  // const fetchUserData = async () => {
-  //   const userData = await meRequest();
-  //   return userData;
-  // };
-  // if (username) {
-  //   console.log("hi, " + username);
-  // }
   useEffect(() => {
     fetchConversationDetails();
   }, []);
   return (
     <>
-      <Sidebar conversations={conversations} />
+      <Sidebar
+        conversations={conversations}
+        setSelectedConversation={handleSelectedConversation}
+      />
       <div className="flex flex-col flex-1">
-        <ConversationPanelHeader />
-        <ConversationPanelFeed />
+        <ConversationPanelHeader conversation={selectedConversation} />
+        <ConversationPanelFeed conversationId={selectedConversation?.id} />
       </div>
     </>
   );
