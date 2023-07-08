@@ -4,13 +4,22 @@ import ConversationTypeForm from "../forms/ConversationTypeForm";
 import { getMessagesRequest } from "../../api/messages/getMessages";
 import { MessageResponse } from "../../types/messages/messageTypes";
 import { useParams } from "react-router-dom";
+import { meRequest } from "../../api/auth/me";
 
 const ConversationPanelFeed: React.FC = () => {
   const lastMessageRef = useRef<string>("");
   const [messages, setMessages] = useState<MessageResponse[]>([]);
   const { id } = useParams();
+  const [username, setUsername] = useState("");
 
+  const fetchCurrentUser = async () => {
+    const user = await meRequest();
+    if (user) {
+      setUsername(user?.username);
+    }
+  };
   useEffect(() => {
+    fetchCurrentUser();
     console.log(id);
   }, []);
 
@@ -51,7 +60,7 @@ const ConversationPanelFeed: React.FC = () => {
                       <React.Fragment>
                         <div
                           className={`${
-                            message.sender === "hardswap"
+                            message.sender === username
                               ? "bg-blue-500"
                               : "bg-red-500"
                           } h-[32px] w-[32px] rounded-full`}
