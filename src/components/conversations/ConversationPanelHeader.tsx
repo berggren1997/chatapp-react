@@ -17,8 +17,9 @@ const ConversationPanelHeader: React.FC<Props> = ({ conversation }) => {
     }
   };
   useEffect(() => {
+    console.log("Header rerender");
     sendMeRequest();
-  }, []);
+  }, [currentUser]);
 
   return (
     <div className="flex items-center border-b-[1px] border-zinc-800 mx-6 h-[70px]">
@@ -40,7 +41,4 @@ const ConversationPanelHeader: React.FC<Props> = ({ conversation }) => {
     </div>
   );
 };
-
-// RxHamburgerMenu
-
 export default ConversationPanelHeader;

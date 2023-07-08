@@ -14,11 +14,12 @@ export const apiClient = {
       const data = await response.json();
       return data;
     } catch (error) {
+      console.log("fångar vi 400? Inne i ApiClient");
+
       throw error;
     }
   },
   post: async <T, R>(url: string, values: T): Promise<R> => {
-    console.log("here");
     try {
       const response = await fetch(`${apiClient.baseUrl}${url}`, {
         method: "POST",
