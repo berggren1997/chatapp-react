@@ -2,15 +2,21 @@ import { useRef, useState, useEffect } from "react";
 import React from "react";
 import ConversationTypeForm from "../forms/ConversationTypeForm";
 import { getMessagesRequest } from "../../api/messages/getMessages";
-import { MessageResponse } from "../../types/messages/messageTypes";
+import {
+  MessageRequest,
+  MessageResponse,
+} from "../../types/messages/messageTypes";
 import { useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
+import useSignalR from "../../hooks/useSignalR";
+import { RETRIEVE_MESSAGE_EVENT } from "../../constants/signalR";
 
 const ConversationPanelFeed: React.FC = () => {
   const lastMessageRef = useRef<string>("");
   const [messages, setMessages] = useState<MessageResponse[]>([]);
   const { id } = useParams();
   const [username, setUsername] = useState("");
+  const hubConnection = useSignalR("http://localhost:5247/messageHub");
 
   const fetchCurrentUser = async () => {
     const user = await meRequest();
@@ -18,10 +24,6 @@ const ConversationPanelFeed: React.FC = () => {
       setUsername(user?.username);
     }
   };
-  useEffect(() => {
-    fetchCurrentUser();
-    console.log(id);
-  }, []);
 
   const fetchMessagesForConversation = async () => {
     if (id) {
@@ -38,6 +40,18 @@ const ConversationPanelFeed: React.FC = () => {
   useEffect(() => {
     fetchMessagesForConversation();
   }, [id]);
+
+  useEffect(() => {
+    fetchCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    if (hubConnection) {
+      hubConnection.on(RETRIEVE_MESSAGE_EVENT, (content: MessageResponse) => {
+        setMessages((prevMessages) => [...prevMessages, content]);
+      });
+    }
+  }, [hubConnection]);
 
   if (messages && messages.length === 0) return <div>ConversationPanel</div>;
 
@@ -83,7 +97,11 @@ const ConversationPanelFeed: React.FC = () => {
             })}
           </div>
         </div>
-        <ConversationTypeForm />
+        {/* <button onClick={sendMessageAsync}>Test WS</button> */}
+        <ConversationTypeForm
+          connection={hubConnection}
+          conversationId={id || ""}
+        />
       </>
     );
 };

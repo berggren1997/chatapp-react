@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ConversationPanelHeader from "./ConversationPanelHeader";
-import { Outlet } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
 import { fetchConversationsRequest } from "../../api/conversations/getConversations";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
@@ -14,9 +14,19 @@ const ConversationPanel = () => {
   );
   const [currentUser, setCurrentUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const { id } = useParams();
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
+  };
+
+  const getSelectedConversation = (
+    conversationId: string
+  ): ConversationResponse | undefined => {
+    if (id) {
+      const selectedConvo = conversations.filter((x) => x.id === id);
+      return selectedConvo[0];
+    }
   };
 
   const fetchCurrentUser = async () => {
@@ -44,6 +54,7 @@ const ConversationPanel = () => {
     fetchUserConversations();
     fetchCurrentUser();
   }, []);
+
   if (isLoading) return <div>Loading...</div>;
   return (
     <>
@@ -53,7 +64,10 @@ const ConversationPanel = () => {
         currentUser={currentUser}
       />
       <div className="flex flex-col flex-1">
-        <ConversationPanelHeader conversation={selectedConversation} />
+        <ConversationPanelHeader
+          conversation={getSelectedConversation(id || "")}
+          currentUser={currentUser}
+        />
         <Outlet />
       </div>
     </>

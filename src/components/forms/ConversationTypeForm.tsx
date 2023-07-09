@@ -1,7 +1,17 @@
 // import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useState } from "react";
+import { MessageRequest } from "../../types/messages/messageTypes";
+import { SEND_MESSAGE_EVENT } from "../../constants/signalR";
 
-const ConversationTypeForm: React.FC = () => {
+interface Props {
+  connection: any;
+  conversationId: string;
+}
+
+const ConversationTypeForm: React.FC<Props> = ({
+  connection,
+  conversationId,
+}) => {
   const [message, setMessage] = useState("");
 
   const handleMessage = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -9,11 +19,14 @@ const ConversationTypeForm: React.FC = () => {
     setMessage(event.target.value);
   };
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     // Kontrollera meddelandet innan vi skickar iväg det
     event.preventDefault();
-    console.log(message);
-    setMessage("");
+    if (connection) {
+      await connection.invoke(SEND_MESSAGE_EVENT, { message, conversationId });
+      setMessage("");
+    }
+    // console.log(message);
   };
   return (
     <div className="flex relative bg-[#1e1e1e]">

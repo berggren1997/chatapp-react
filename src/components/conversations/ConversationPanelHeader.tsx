@@ -5,21 +5,24 @@ import { meRequest } from "../../api/auth/me";
 
 interface Props {
   conversation: ConversationResponse | undefined;
+  currentUser: string;
 }
 
-const ConversationPanelHeader: React.FC<Props> = ({ conversation }) => {
-  const [currentUser, setCurrentUser] = useState("");
+const ConversationPanelHeader: React.FC<Props> = ({
+  conversation,
+  currentUser,
+}) => {
+  // const [currentUser, setCurrentUser] = useState("");
 
-  const sendMeRequest = async () => {
-    const data = await meRequest();
-    if (data?.username) {
-      setCurrentUser(data.username);
-    }
-  };
-  useEffect(() => {
-    console.log("Header rerender");
-    sendMeRequest();
-  }, [currentUser]);
+  // const sendMeRequest = async () => {
+  //   const data = await meRequest();
+  //   if (data?.username) {
+  //     setCurrentUser(data.username);
+  //   }
+  // };
+  // useEffect(() => {
+  //   sendMeRequest();
+  // }, [currentUser]);
 
   return (
     <div className="flex items-center border-b-[1px] border-zinc-800 mx-6 h-[70px]">
