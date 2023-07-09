@@ -1,6 +1,5 @@
 // import { AiOutlinePlusCircle } from "react-icons/ai";
 import { useState } from "react";
-import { MessageRequest } from "../../types/messages/messageTypes";
 import { SEND_MESSAGE_EVENT } from "../../constants/signalR";
 
 interface Props {

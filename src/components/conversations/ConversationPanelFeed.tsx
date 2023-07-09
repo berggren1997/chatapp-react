@@ -2,10 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import React from "react";
 import ConversationTypeForm from "../forms/ConversationTypeForm";
 import { getMessagesRequest } from "../../api/messages/getMessages";
-import {
-  MessageRequest,
-  MessageResponse,
-} from "../../types/messages/messageTypes";
+import { MessageResponse } from "../../types/messages/messageTypes";
 import { useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
 import useSignalR from "../../hooks/useSignalR";
