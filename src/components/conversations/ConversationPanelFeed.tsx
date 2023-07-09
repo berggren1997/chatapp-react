@@ -43,6 +43,13 @@ const ConversationPanelFeed: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const chatFeedElement = document.getElementById("chat-feed");
+    if (chatFeedElement) {
+      chatFeedElement.scrollTop = chatFeedElement.scrollHeight;
+    }
+  }, [messages]);
+
+  useEffect(() => {
     if (hubConnection) {
       hubConnection.on(RETRIEVE_MESSAGE_EVENT, (content: MessageResponse) => {
         setMessages((prevMessages) => [...prevMessages, content]);
@@ -55,7 +62,10 @@ const ConversationPanelFeed: React.FC = () => {
   if (messages.length > 0)
     return (
       <>
-        <div className="flex flex-1 mt-4 p-3 overflow-y-scroll scroll-auto bg-[#1e1e1e]">
+        <div
+          id="chat-feed"
+          className="flex flex-1 mt-4 p-3 overflow-y-scroll scroll-auto bg-[#1e1e1e]"
+        >
           <div className="flex flex-col mt-3">
             {messages.map((message, idx) => {
               const isPreviousMessage =
@@ -94,6 +104,7 @@ const ConversationPanelFeed: React.FC = () => {
             })}
           </div>
         </div>
+        {/* <div ref={scrollRef}></div> */}
         {/* <button onClick={sendMessageAsync}>Test WS</button> */}
         <ConversationTypeForm
           connection={hubConnection}
