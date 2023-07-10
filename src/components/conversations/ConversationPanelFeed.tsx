@@ -14,6 +14,7 @@ const ConversationPanelFeed: React.FC = () => {
   const { id } = useParams();
   const [username, setUsername] = useState("");
   const [nextPageNumber, setNextPageNumber] = useState<number>(1);
+  const [metaData, setMetaData] = useState<any>({});
   const [isFetchingMoreMessages, setIsFetchingMoreMessages] =
     useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -26,15 +27,13 @@ const ConversationPanelFeed: React.FC = () => {
     }
   };
 
-  const fetchMessagesForConversation = async () => {
+  const fetchMessagesForConversation = async (pageNumber: number) => {
     if (id) {
       try {
-        const conversationMessages = await getMessagesRequest(
-          id,
-          nextPageNumber
-        );
-        setMessages(conversationMessages);
-        setNextPageNumber(nextPageNumber + 1);
+        const conversationMessages = await getMessagesRequest(id, pageNumber);
+        setMessages(conversationMessages.messages);
+        setMetaData(conversationMessages.metaData);
+        // setNextPageNumber(nextPageNumber + 1);
       } catch (error) {
         setMessages([]);
         console.error(error);
@@ -45,18 +44,28 @@ const ConversationPanelFeed: React.FC = () => {
   const handleFetchMoreMessages = async () => {
     if (id) {
       setIsFetchingMoreMessages(true);
-      const newMessageBatch = await getMessagesRequest(id, nextPageNumber);
+      const newMessageBatch = await getMessagesRequest(id, nextPageNumber + 1);
       if (newMessageBatch) {
-        setMessages((prevMessages) => [...newMessageBatch, ...prevMessages]);
+        setMessages((prevMessages) => [
+          ...newMessageBatch.messages,
+          ...prevMessages,
+        ]);
+        setNextPageNumber((prevState) => prevState + 1);
+        setMetaData(newMessageBatch.metaData);
       }
     }
   };
 
   useEffect(() => {
-    fetchMessagesForConversation();
+    console.log("should fetch messages for conversation");
+
+    fetchMessagesForConversation(1);
+    setNextPageNumber(1);
   }, [id]);
 
   useEffect(() => {
+    console.log("fetch user req");
+
     fetchCurrentUser();
   }, []);
 
@@ -86,9 +95,17 @@ const ConversationPanelFeed: React.FC = () => {
           className="flex flex-col flex-1 mt-4 p-3 overflow-y-scroll scroll-auto bg-[#1e1e1e]"
           ref={containerRef}
         >
-          <button onClick={handleFetchMoreMessages}>
-            <span className="text-[16px] text-slate-300">load more</span>
-          </button>
+          {/* check hasNextPage from the server, only display the button + span if hasNextPage = true */}
+          {metaData.hasNext && (
+            <button
+              onClick={handleFetchMoreMessages}
+              className="w-full flex bg-[#2d2d2d] rounded-md mb-2"
+            >
+              <span className="text-[16px] text-slate-300 w-full">
+                Load more
+              </span>
+            </button>
+          )}
           <div className="flex flex-col mt-3">
             {messages.map((message, idx) => {
               const isPreviousMessage =
