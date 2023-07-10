@@ -13,6 +13,10 @@ const ConversationPanelFeed: React.FC = () => {
   const [messages, setMessages] = useState<MessageResponse[]>([]);
   const { id } = useParams();
   const [username, setUsername] = useState("");
+  const [nextPageNumber, setNextPageNumber] = useState<number>(1);
+  const [isFetchingMoreMessages, setIsFetchingMoreMessages] =
+    useState<boolean>(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const hubConnection = useSignalR("http://localhost:5247/messageHub");
 
   const fetchCurrentUser = async () => {
@@ -25,11 +29,25 @@ const ConversationPanelFeed: React.FC = () => {
   const fetchMessagesForConversation = async () => {
     if (id) {
       try {
-        const conversationMessages = await getMessagesRequest(id);
+        const conversationMessages = await getMessagesRequest(
+          id,
+          nextPageNumber
+        );
         setMessages(conversationMessages);
+        setNextPageNumber(nextPageNumber + 1);
       } catch (error) {
         setMessages([]);
         console.error(error);
+      }
+    }
+  };
+
+  const handleFetchMoreMessages = async () => {
+    if (id) {
+      setIsFetchingMoreMessages(true);
+      const newMessageBatch = await getMessagesRequest(id, nextPageNumber);
+      if (newMessageBatch) {
+        setMessages((prevMessages) => [...newMessageBatch, ...prevMessages]);
       }
     }
   };
@@ -44,15 +62,16 @@ const ConversationPanelFeed: React.FC = () => {
 
   useEffect(() => {
     const chatFeedElement = document.getElementById("chat-feed");
-    if (chatFeedElement) {
+    if (chatFeedElement && !isFetchingMoreMessages) {
       chatFeedElement.scrollTop = chatFeedElement.scrollHeight;
     }
-  }, [messages]);
+  }, [messages, isFetchingMoreMessages]);
 
   useEffect(() => {
     if (hubConnection) {
       hubConnection.on(RETRIEVE_MESSAGE_EVENT, (content: MessageResponse) => {
         setMessages((prevMessages) => [...prevMessages, content]);
+        setIsFetchingMoreMessages(false);
       });
     }
   }, [hubConnection]);
@@ -64,8 +83,12 @@ const ConversationPanelFeed: React.FC = () => {
       <>
         <div
           id="chat-feed"
-          className="flex flex-1 mt-4 p-3 overflow-y-scroll scroll-auto bg-[#1e1e1e]"
+          className="flex flex-col flex-1 mt-4 p-3 overflow-y-scroll scroll-auto bg-[#1e1e1e]"
+          ref={containerRef}
         >
+          <button onClick={handleFetchMoreMessages}>
+            <span className="text-[16px] text-slate-300">load more</span>
+          </button>
           <div className="flex flex-col mt-3">
             {messages.map((message, idx) => {
               const isPreviousMessage =
