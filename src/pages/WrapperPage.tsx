@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "../components/Sidebar";
+import ConversationSidebar from "../components/conversations/ConversationSidebar";
 import ConversationPanel from "../components/conversations/ConversationPanel";
 
 const WrapperPage = () => {

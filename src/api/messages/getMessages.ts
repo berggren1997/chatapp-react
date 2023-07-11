@@ -6,13 +6,14 @@ export const getMessagesRequest = async (
   pageNumber: number
 ) => {
   try {
-    const messages = await apiClient.get<MessageResponse[] | any>(
+    const response = await apiClient.get<MessageResponse[] | any>(
       `/api/message?conversationId=${conversationId}&pageNumber=${pageNumber}&pageSize=${50}`
     );
-    if (messages && messages.status === 400) {
+    if (response && response.status === 400) {
       throw new Error("Invalid conversationId from messages.");
     }
-    return messages;
+    const { messages, metaData } = response;
+    return { messages, metaData };
   } catch (error) {
     throw error;
   }

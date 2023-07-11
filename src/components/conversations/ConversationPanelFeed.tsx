@@ -144,8 +144,6 @@ const ConversationPanelFeed: React.FC = () => {
             })}
           </div>
         </div>
-        {/* <div ref={scrollRef}></div> */}
-        {/* <button onClick={sendMessageAsync}>Test WS</button> */}
         <ConversationTypeForm
           connection={hubConnection}
           conversationId={id || ""}

@@ -1,6 +1,6 @@
 import { BsChatSquareDots } from "react-icons/bs";
 import { useState } from "react";
-import { ConversationResponse } from "../types/conversations/conversationsTypes";
+import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import { useNavigate } from "react-router-dom";
 
 interface Props {
@@ -9,7 +9,7 @@ interface Props {
   currentUser: string;
 }
 
-const Sidebar: React.FC<Props> = ({
+const ConversationSidebar: React.FC<Props> = ({
   conversations,
   setSelectedConversation,
   currentUser,
@@ -80,4 +80,4 @@ const Sidebar: React.FC<Props> = ({
 };
 
 //border-zinc-800
-export default Sidebar;
+export default ConversationSidebar;

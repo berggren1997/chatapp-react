@@ -4,7 +4,8 @@ import { Outlet, useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
 import { fetchConversationsRequest } from "../../api/conversations/getConversations";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
-import Sidebar from "../Sidebar";
+import ConversationSidebar from "./ConversationSidebar";
+import ConversationPanelMembers from "./ConversationPanelMembers";
 
 const ConversationPanel = () => {
   const [selectedConversation, setSelectedConversation] =
@@ -58,7 +59,7 @@ const ConversationPanel = () => {
   if (isLoading) return <div>Loading...</div>;
   return (
     <>
-      <Sidebar
+      <ConversationSidebar
         conversations={conversations}
         setSelectedConversation={handleSelectedConversation}
         currentUser={currentUser}
@@ -70,6 +71,9 @@ const ConversationPanel = () => {
         />
         <Outlet />
       </div>
+      <ConversationPanelMembers
+        conversationDetails={getSelectedConversation(id || "")}
+      />
     </>
   );
 };
