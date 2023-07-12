@@ -1,4 +1,3 @@
-import { BsChatSquareDots, BsPlusCircleFill } from "react-icons/bs";
 import { useState } from "react";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import { useNavigate } from "react-router-dom";
@@ -8,12 +7,14 @@ interface Props {
   conversations: ConversationResponse[];
   setSelectedConversation: (conversationDetails: ConversationResponse) => void;
   currentUser: string;
+  openModal: () => void;
 }
 
 const ConversationSidebar: React.FC<Props> = ({
   conversations,
   setSelectedConversation,
   currentUser,
+  openModal,
 }) => {
   const [clickedConversation, setClickedConversation] = useState("");
   const navigate = useNavigate();
@@ -22,8 +23,6 @@ const ConversationSidebar: React.FC<Props> = ({
     setClickedConversation(conversation.id);
     setSelectedConversation(conversation);
     navigate(`/conversations/${conversation.id}`);
-    // Here we also want to do something else with the conversationId, like navigating to conversations/conversationId,
-    // and from there on that page, we want to fetch the messages for that conversation
   };
 
   if (conversations === undefined || conversations.length === 0)
@@ -37,11 +36,14 @@ const ConversationSidebar: React.FC<Props> = ({
         <div className="flex flex-col items-center justify-center mb-4">
           <div className="flex items-center justify-center">
             <input
-              className="text-white bg-[#262626] p-3 focus:outline-none rounded-lg w-full mx-2 h-[38px] mb-3"
+              className="text-white bg-[#262626] p-3 focus:outline-none rounded-lg w-full mx-1 h-[38px] mb-3 text-sm"
               type="text"
               placeholder="Search Conversations..."
             />
-            <AiOutlinePlus className="w-[43px] text-white bg-[#262626] rounded-full p-2 h-[40px] hover:cursor-pointer mx-2 mb-3" />
+            <AiOutlinePlus
+              onClick={openModal}
+              className="w-[43px] text-white bg-[#262626] rounded-full p-2 h-[40px] hover:cursor-pointer mx-2 mb-3"
+            />
           </div>
           <div className="border-b-[1px] border-zinc-800 w-full mt-1"></div>
         </div>
@@ -58,7 +60,7 @@ const ConversationSidebar: React.FC<Props> = ({
               <div className="flex items-center h-full w-full">
                 <div className="bg-red-500 w-[39px] h-[34px] rounded-full"></div>
                 <div className="ml-4 flex flex-col items-start w-full">
-                  <p className="font-semibold text-sm">
+                  <p className="text-sm">
                     {currentUser === conversation.conversationDetails.creator
                       ? conversation.conversationDetails.recipient
                       : conversation.conversationDetails.creator}

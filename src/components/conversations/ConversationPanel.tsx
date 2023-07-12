@@ -6,6 +6,8 @@ import { fetchConversationsRequest } from "../../api/conversations/getConversati
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import ConversationSidebar from "./ConversationSidebar";
 import ConversationPanelMembers from "./ConversationPanelMembers";
+import ModalOverlay from "../ModalOverlay";
+import CreateConversationContent from "./CreateConversationContent";
 
 const ConversationPanel = () => {
   const [selectedConversation, setSelectedConversation] =
@@ -16,6 +18,7 @@ const ConversationPanel = () => {
   const [currentUser, setCurrentUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
+  const [openModal, setOpenModal] = useState(false);
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
@@ -51,18 +54,28 @@ const ConversationPanel = () => {
       console.error(error);
     }
   };
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
   useEffect(() => {
     fetchUserConversations();
     fetchCurrentUser();
   }, []);
 
   if (isLoading) return <div>Loading...</div>;
+
   return (
     <>
       <ConversationSidebar
         conversations={conversations}
         setSelectedConversation={handleSelectedConversation}
         currentUser={currentUser}
+        openModal={handleOpenModal}
       />
       <div className="flex flex-col flex-1 bg-[#1e1e1e]">
         <ConversationPanelHeader
@@ -74,6 +87,11 @@ const ConversationPanel = () => {
       <ConversationPanelMembers
         conversationDetails={getSelectedConversation(id || "")}
       />
+      {openModal && (
+        <ModalOverlay
+          children={<CreateConversationContent closeModal={handleCloseModal} />}
+        />
+      )}
     </>
   );
 };
