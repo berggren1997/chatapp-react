@@ -5,6 +5,7 @@ import ConversationPanel from "./components/conversations/ConversationPanel";
 import AuthenticatedRoute from "./guards/AuthenticatedRoute";
 import WrapperPage from "./pages/WrapperPage";
 import ConversationPanelFeed from "./components/conversations/ConversationPanelFeed";
+import Modal from "./components/Modal";
 
 const App = () => {
   return (
@@ -13,12 +14,14 @@ const App = () => {
         <Route path="/" element={<Navigate to="/conversations" replace />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
+        <Route path="modal" element={<Modal />} />
         <Route element={<AuthenticatedRoute children={<WrapperPage />} />}>
           <Route path="conversations" element={<ConversationPanel />}>
             <Route path=":id" element={<ConversationPanelFeed />} />
           </Route>
         </Route>
       </Routes>
+      <div id="modal"></div>
     </div>
   );
 };

@@ -114,7 +114,7 @@ const ConversationPanelFeed: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className="flex flex-col w-[400px] md:w-[500px] text-black mb-2"
+                  className="flex flex-col w-[400px] md:w-[500px] text-black"
                 >
                   <div className="flex flex-row items-center gap-3">
                     {(!isPreviousMessage || idx === 0) && (

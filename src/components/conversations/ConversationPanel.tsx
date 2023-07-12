@@ -64,7 +64,7 @@ const ConversationPanel = () => {
         setSelectedConversation={handleSelectedConversation}
         currentUser={currentUser}
       />
-      <div className="flex flex-col flex-1">
+      <div className="flex flex-col flex-1 bg-[#1e1e1e]">
         <ConversationPanelHeader
           conversation={getSelectedConversation(id || "")}
           currentUser={currentUser}

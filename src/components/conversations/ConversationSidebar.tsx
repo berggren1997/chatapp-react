@@ -1,7 +1,8 @@
-import { BsChatSquareDots } from "react-icons/bs";
+import { BsChatSquareDots, BsPlusCircleFill } from "react-icons/bs";
 import { useState } from "react";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import { useNavigate } from "react-router-dom";
+import { AiOutlinePlus } from "react-icons/ai";
 
 interface Props {
   conversations: ConversationResponse[];
@@ -30,24 +31,25 @@ const ConversationSidebar: React.FC<Props> = ({
 
   return (
     <div className="hidden md:flex flex-col h-full w-[300px] border-r-[1px] border-zinc-800">
-      <div className="flex items-center text-center mt-4 mb-2">
-        <div className="flex justify-center w-full">
-          <h1 className="text-xl text-[22px] font-semibold">Conversations</h1>
-        </div>
-        <div className="flex justify-end mr-2">
-          <BsChatSquareDots className="w-[25px] h-[25px] hover:cursor-pointer mr-2" />
-        </div>
-      </div>
-      <div className="border-b-[1px] border-zinc-800"></div>
-
       {/* FLYTTA UNDERLIGGANDE DEL TILL EN EGEN KOMPONENT */}
       {/* conversation-item wrapper */}
-      <div className="flex flex-col mt-6 gap-3">
+      <div className="flex flex-col mt-8 gap-3">
+        <div className="flex flex-col items-center justify-center mb-4">
+          <div className="flex items-center justify-center">
+            <input
+              className="text-white bg-[#262626] p-3 focus:outline-none rounded-lg w-full mx-2 h-[38px] mb-3"
+              type="text"
+              placeholder="Search Conversations..."
+            />
+            <AiOutlinePlus className="w-[43px] text-white bg-[#262626] rounded-full p-2 h-[40px] hover:cursor-pointer mx-2 mb-3" />
+          </div>
+          <div className="border-b-[1px] border-zinc-800 w-full mt-1"></div>
+        </div>
         {conversations.map((conversation) => (
           <div
             key={conversation.id}
             onClick={() => handleClickedConversation(conversation)}
-            className={`flex flex-col items-center justify-between p-3 h-[80px] hover:cursor-pointer 
+            className={`flex flex-col items-center justify-between p-3 hover:cursor-pointer 
           hover:bg-zinc-800 mx-2 rounded-md ${
             conversation.id === clickedConversation && "bg-zinc-800"
           }`}

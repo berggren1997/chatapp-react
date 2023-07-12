@@ -28,7 +28,7 @@ const ConversationTypeForm: React.FC<Props> = ({
     // console.log(message);
   };
   return (
-    <div className="flex mb-5 relative bg-[#1e1e1e]">
+    <div className="flex relative bg-[#1e1e1e]">
       <form onSubmit={handleSubmit} className="flex relative w-full">
         {/* <AiOutlinePlusCircle className="absolute top-[17px] left-[45px] w-[24px] h-[24px] hover:cursor-pointer" /> */}
         <input
