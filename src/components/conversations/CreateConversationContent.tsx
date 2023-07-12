@@ -1,5 +1,7 @@
 import { AiOutlineClose } from "react-icons/ai";
 import { useState } from "react";
+import { findUserRequest } from "../../api/users/findUserRequest";
+import { FindUserResponse } from "../../types/users/userTypes";
 
 interface Props {
   closeModal: () => void;
@@ -7,7 +9,17 @@ interface Props {
 
 const CreateConversationContent: React.FC<Props> = ({ closeModal }) => {
   const [username, setUsername] = useState<string>("");
-  const [searchedUsers, setSearchedUsers] = useState<string[]>([]);
+  const [searchedUsers, setSearchedUsers] = useState<FindUserResponse[]>([]);
+
+  const handleSearchUser = async () => {
+    try {
+      const users = await findUserRequest(username);
+      setSearchedUsers(users!);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="rounded-md bg-[#262626] p-4 gap-5 flex flex-col mx-32 justify-center items-center w-[500px] text-center">
       <div className="w-full flex items-center">
@@ -26,18 +38,25 @@ const CreateConversationContent: React.FC<Props> = ({ closeModal }) => {
           placeholder="Search username"
         />
       </div>
-      {searchedUsers.length > 0 && (
-        <div className="flex w-full items-center bg-[#3b3b3b] p-2 rounded-md">
-          <div className="flex justify-start w-full">
-            <span className="text-sm text-zinc-400 font-semibold">
-              {username}
-            </span>
+      {searchedUsers &&
+        searchedUsers.length > 0 &&
+        searchedUsers.map((user) => (
+          <div
+            key={user.id}
+            className="flex w-full items-center bg-[#3b3b3b] p-2 rounded-md"
+          >
+            <div className="flex justify-start w-full">
+              <span className="text-sm text-zinc-400 font-semibold">
+                {user.userName}
+              </span>
+            </div>
+            <div className="justify-end">
+              <button className="bg-[#0000FF] text-xs rounded-md p-2 w-16">
+                Add
+              </button>
+            </div>
           </div>
-          <div className="justify-end">
-            <button className="bg-[#0000FF] text-xs rounded-md p-2">Add</button>
-          </div>
-        </div>
-      )}
+        ))}
 
       <div className="w-full">
         <button
@@ -45,9 +64,7 @@ const CreateConversationContent: React.FC<Props> = ({ closeModal }) => {
             username ? "hover:bg-[#0000b5]" : "cursor-not-allowed"
           }`}
           disabled={!username}
-          onClick={() => {
-            setSearchedUsers([...searchedUsers, username]);
-          }}
+          onClick={handleSearchUser}
         >
           Find user
         </button>
