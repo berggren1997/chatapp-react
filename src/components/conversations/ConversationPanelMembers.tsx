@@ -5,9 +5,13 @@ import React from "react";
 
 interface Props {
   conversationDetails: ConversationResponse | undefined;
+  currentUser: string;
 }
 
-const ConversationPanelMembers: React.FC<Props> = ({ conversationDetails }) => {
+const ConversationPanelMembers: React.FC<Props> = ({
+  conversationDetails,
+  currentUser,
+}) => {
   useEffect(() => {
     console.log(conversationDetails);
   }, [conversationDetails]);
@@ -25,7 +29,14 @@ const ConversationPanelMembers: React.FC<Props> = ({ conversationDetails }) => {
           </p>
           <div className="flex flex-col">
             <div className="flex items-center gap-3 mt-1 hover:bg-zinc-800 hover:cursor-pointer rounded-md p-2">
-              <div className="bg-blue-500 w-[30px] h-[30px] rounded-full"></div>
+              <div
+                className={`${
+                  currentUser ===
+                  conversationDetails?.conversationDetails.creator
+                    ? "bg-blue-500"
+                    : "bg-red-500"
+                } w-[30px] h-[30px] rounded-full`}
+              ></div>
               <span className="text-sm text-zinc-300">
                 {conversationDetails?.conversationDetails.creator}
               </span>
@@ -36,7 +47,14 @@ const ConversationPanelMembers: React.FC<Props> = ({ conversationDetails }) => {
             </div>
 
             <div className="flex items-center gap-3 mt-1 hover:bg-zinc-800 hover:cursor-pointer rounded-md p-2">
-              <div className="bg-red-500 w-[30px] h-[30px] rounded-full"></div>
+              <div
+                className={`${
+                  currentUser ===
+                  conversationDetails?.conversationDetails.recipient
+                    ? "bg-blue-500"
+                    : "bg-red-500"
+                } w-[30px] h-[30px] rounded-full`}
+              ></div>
               <span className="text-sm text-zinc-300">
                 {conversationDetails?.conversationDetails.recipient}
               </span>

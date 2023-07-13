@@ -86,6 +86,7 @@ const ConversationPanel = () => {
       </div>
       <ConversationPanelMembers
         conversationDetails={getSelectedConversation(id || "")}
+        currentUser={currentUser}
       />
       {openModal && (
         <ModalOverlay

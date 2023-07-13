@@ -2,6 +2,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { useState } from "react";
 import { findUserRequest } from "../../api/users/findUserRequest";
 import { FindUserResponse } from "../../types/users/userTypes";
+import UserSearchList from "./UserSearchList";
 
 interface Props {
   closeModal: () => void;
@@ -38,25 +39,9 @@ const CreateConversationContent: React.FC<Props> = ({ closeModal }) => {
           placeholder="Search username"
         />
       </div>
-      {searchedUsers &&
-        searchedUsers.length > 0 &&
-        searchedUsers.map((user) => (
-          <div
-            key={user.id}
-            className="flex w-full items-center bg-[#3b3b3b] p-2 rounded-md"
-          >
-            <div className="flex justify-start w-full">
-              <span className="text-sm text-zinc-400 font-semibold">
-                {user.userName}
-              </span>
-            </div>
-            <div className="justify-end">
-              <button className="bg-[#0000FF] text-xs rounded-md p-2 w-16">
-                Add
-              </button>
-            </div>
-          </div>
-        ))}
+      {searchedUsers && searchedUsers.length > 0 && (
+        <UserSearchList users={searchedUsers} closeModal={closeModal} />
+      )}
 
       <div className="w-full">
         <button

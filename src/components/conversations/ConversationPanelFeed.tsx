@@ -85,29 +85,28 @@ const ConversationPanelFeed: React.FC = () => {
     }
   }, [hubConnection]);
 
-  if (messages && messages.length === 0) return <div>ConversationPanel</div>;
+  // if (messages && messages.length === 0) return <div>ConversationPanel</div>;
 
-  if (messages.length > 0)
-    return (
-      <>
-        <div
-          id="chat-feed"
-          className="flex flex-col flex-1 mt-4 p-3 overflow-y-scroll scroll-auto bg-[#1e1e1e]"
-          ref={containerRef}
-        >
-          {/* check hasNextPage from the server, only display the button + span if hasNextPage = true */}
-          {metaData.hasNext && (
-            <button
-              onClick={handleFetchMoreMessages}
-              className="w-full flex bg-[#2d2d2d] rounded-md mb-2"
-            >
-              <span className="text-[16px] text-slate-300 w-full">
-                Load more
-              </span>
-            </button>
-          )}
-          <div className="flex flex-col mt-3">
-            {messages.map((message, idx) => {
+  // if (messages.length > 0)
+  return (
+    <>
+      <div
+        id="chat-feed"
+        className="flex flex-col flex-1 mt-4 p-3 overflow-y-scroll scroll-auto bg-[#1e1e1e]"
+        ref={containerRef}
+      >
+        {/* check hasNextPage from the server, only display the button + span if hasNextPage = true */}
+        {metaData.hasNext && (
+          <button
+            onClick={handleFetchMoreMessages}
+            className="w-full flex bg-[#2d2d2d] rounded-md mb-2"
+          >
+            <span className="text-[16px] text-slate-300 w-full">Load more</span>
+          </button>
+        )}
+        <div className="flex flex-col mt-3">
+          {messages &&
+            messages.map((message, idx) => {
               const isPreviousMessage =
                 lastMessageRef?.current === message.sender;
               lastMessageRef.current = message.sender;
@@ -142,14 +141,14 @@ const ConversationPanelFeed: React.FC = () => {
                 </div>
               );
             })}
-          </div>
         </div>
-        <ConversationTypeForm
-          connection={hubConnection}
-          conversationId={id || ""}
-        />
-      </>
-    );
+      </div>
+      <ConversationTypeForm
+        connection={hubConnection}
+        conversationId={id || ""}
+      />
+    </>
+  );
 };
 
 export default ConversationPanelFeed;

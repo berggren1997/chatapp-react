@@ -25,8 +25,8 @@ const ConversationSidebar: React.FC<Props> = ({
     navigate(`/conversations/${conversation.id}`);
   };
 
-  if (conversations === undefined || conversations.length === 0)
-    return <div>No conversations</div>;
+  // if (conversations === undefined || conversations.length === 0)
+  //   return <div>No conversations</div>;
 
   return (
     <div className="hidden md:flex flex-col h-full w-[300px] border-r-[1px] border-zinc-800">
@@ -47,37 +47,41 @@ const ConversationSidebar: React.FC<Props> = ({
           </div>
           <div className="border-b-[1px] border-zinc-800 w-full mt-1"></div>
         </div>
-        {conversations.map((conversation) => (
-          <div
-            key={conversation.id}
-            onClick={() => handleClickedConversation(conversation)}
-            className={`flex flex-col items-center justify-between p-3 hover:cursor-pointer 
+        {conversations ? (
+          conversations.map((conversation) => (
+            <div
+              key={conversation.id}
+              onClick={() => handleClickedConversation(conversation)}
+              className={`flex flex-col items-center justify-between p-3 hover:cursor-pointer 
           hover:bg-zinc-800 mx-2 rounded-md ${
             conversation.id === clickedConversation && "bg-zinc-800"
           }`}
-          >
-            <div className="flex flex-col h-full w-full items-start">
-              <div className="flex items-center h-full w-full">
-                <div className="bg-red-500 w-[39px] h-[34px] rounded-full"></div>
-                <div className="ml-4 flex flex-col items-start w-full">
-                  <p className="text-sm">
-                    {currentUser === conversation.conversationDetails.creator
-                      ? conversation.conversationDetails.recipient
-                      : conversation.conversationDetails.creator}
-                  </p>
-                  <div className="flex items-center gap-1 justify-center">
-                    <span className="text-sm font-light text-zinc-400">
-                      You:
-                    </span>
-                    <span className="text-sm font-light text-zinc-400">
-                      Yo, you need to...
-                    </span>
+            >
+              <div className="flex flex-col h-full w-full items-start">
+                <div className="flex items-center h-full w-full">
+                  <div className="bg-red-500 w-[39px] h-[34px] rounded-full"></div>
+                  <div className="ml-4 flex flex-col items-start w-full">
+                    <p className="text-sm">
+                      {currentUser === conversation.conversationDetails.creator
+                        ? conversation.conversationDetails.recipient
+                        : conversation.conversationDetails.creator}
+                    </p>
+                    <div className="flex items-center gap-1 justify-center">
+                      <span className="text-sm font-light text-zinc-400">
+                        You:
+                      </span>
+                      <span className="text-sm font-light text-zinc-400">
+                        Yo, you need to...
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))
+        ) : (
+          <h1>No active conversations</h1>
+        )}
       </div>
     </div>
   );
