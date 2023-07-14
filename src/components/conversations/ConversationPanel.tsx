@@ -8,6 +8,7 @@ import ConversationSidebar from "./ConversationSidebar";
 import ConversationPanelMembers from "./ConversationPanelMembers";
 import ModalOverlay from "../ModalOverlay";
 import CreateConversationContent from "./CreateConversationContent";
+import useSignalR from "../../hooks/useSignalR";
 
 const ConversationPanel = () => {
   const [selectedConversation, setSelectedConversation] =
@@ -19,6 +20,8 @@ const ConversationPanel = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
+
+  const connection = useSignalR("http://localhost:5247/conversationHub");
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
@@ -62,10 +65,23 @@ const ConversationPanel = () => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
+
   useEffect(() => {
     fetchUserConversations();
     fetchCurrentUser();
   }, []);
+
+  useEffect(() => {
+    if (connection) {
+      console.log("this should work");
+
+      connection.on("NewConversationEvent", (answer: any) => {
+        console.log(answer);
+      });
+
+      // connection.invoke("NewConversationNotification");
+    }
+  }, [connection]);
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -90,7 +106,12 @@ const ConversationPanel = () => {
       />
       {openModal && (
         <ModalOverlay
-          children={<CreateConversationContent closeModal={handleCloseModal} />}
+          children={
+            <CreateConversationContent
+              closeModal={handleCloseModal}
+              hubConnection={connection}
+            />
+          }
         />
       )}
     </>

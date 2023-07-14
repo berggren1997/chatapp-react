@@ -7,9 +7,14 @@ import Participant from "./Participant";
 interface Props {
   users: FindUserResponse[];
   closeModal: () => void;
+  hubConnection: any;
 }
 
-const UserSearchList: React.FC<Props> = ({ users, closeModal }) => {
+const UserSearchList: React.FC<Props> = ({
+  users,
+  closeModal,
+  hubConnection,
+}) => {
   const [recipient, setRecipient] = useState("");
   const navigate = useNavigate();
 
@@ -17,6 +22,7 @@ const UserSearchList: React.FC<Props> = ({ users, closeModal }) => {
     try {
       const newConversationId = await createConversationRequest(recipient);
       console.log(newConversationId);
+      hubConnection.invoke("NewConversationNotification", newConversationId);
       closeModal();
       navigate(`/conversations/${newConversationId}`);
     } catch (error) {

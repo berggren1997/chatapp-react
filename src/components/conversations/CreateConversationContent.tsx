@@ -6,9 +6,13 @@ import UserSearchList from "./UserSearchList";
 
 interface Props {
   closeModal: () => void;
+  hubConnection: any;
 }
 
-const CreateConversationContent: React.FC<Props> = ({ closeModal }) => {
+const CreateConversationContent: React.FC<Props> = ({
+  closeModal,
+  hubConnection,
+}) => {
   const [username, setUsername] = useState<string>("");
   const [searchedUsers, setSearchedUsers] = useState<FindUserResponse[]>([]);
 
@@ -40,7 +44,11 @@ const CreateConversationContent: React.FC<Props> = ({ closeModal }) => {
         />
       </div>
       {searchedUsers && searchedUsers.length > 0 && (
-        <UserSearchList users={searchedUsers} closeModal={closeModal} />
+        <UserSearchList
+          users={searchedUsers}
+          closeModal={closeModal}
+          hubConnection={hubConnection}
+        />
       )}
 
       <div className="w-full">
