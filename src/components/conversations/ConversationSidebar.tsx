@@ -29,7 +29,7 @@ const ConversationSidebar: React.FC<Props> = ({
   //   return <div>No conversations</div>;
 
   return (
-    <div className="hidden md:flex flex-col h-full w-[300px] border-r-[1px] border-zinc-800">
+    <div className="hidden md:flex flex-col h-full w-[300px] border-r-[1px] border-zinc-800 overflow-y-scroll">
       {/* FLYTTA UNDERLIGGANDE DEL TILL EN EGEN KOMPONENT */}
       {/* conversation-item wrapper */}
       <div className="flex flex-col mt-8 gap-3">
@@ -67,11 +67,19 @@ const ConversationSidebar: React.FC<Props> = ({
                         : conversation.conversationDetails.creator}
                     </p>
                     <div className="flex items-center gap-1 justify-center">
+                      {currentUser ===
+                        conversation.lastMessageDetails?.sender && (
+                        <span className="text-sm font-light text-zinc-400">
+                          You:
+                        </span>
+                      )}
                       <span className="text-sm font-light text-zinc-400">
-                        You:
-                      </span>
-                      <span className="text-sm font-light text-zinc-400">
-                        Yo, you need to...
+                        {conversation.lastMessageDetails?.message?.length > 10
+                          ? `${conversation.lastMessageDetails.message.substring(
+                              0,
+                              20
+                            )}...`
+                          : conversation.lastMessageDetails?.message}
                       </span>
                     </div>
                   </div>

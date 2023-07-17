@@ -31,8 +31,18 @@ const ConversationPanelFeed: React.FC = () => {
     if (id) {
       try {
         const conversationMessages = await getMessagesRequest(id, pageNumber);
-        setMessages(conversationMessages.messages);
-        setMetaData(conversationMessages.metaData);
+
+        if (
+          conversationMessages.messages &&
+          conversationMessages.messages.length > 0
+        ) {
+          setMessages(conversationMessages.messages);
+          setMetaData(conversationMessages.metaData);
+          // setNextPageNumber(nextPageNumber + 1);
+        } else {
+          setMessages([]);
+          setMetaData({});
+        }
         // setNextPageNumber(nextPageNumber + 1);
       } catch (error) {
         setMessages([]);

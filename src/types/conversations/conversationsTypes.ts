@@ -1,7 +1,10 @@
+import { MessageResponse } from "../messages/messageTypes";
+
 export type ConversationResponse = {
   id: string;
   createdAt: string;
   conversationDetails: ConversationDetails;
+  lastMessageDetails: MessageResponse;
 };
 
 export type CreateConversationRequest = {

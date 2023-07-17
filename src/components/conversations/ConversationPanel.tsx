@@ -75,9 +75,15 @@ const ConversationPanel = () => {
     if (connection) {
       console.log("this should work");
 
-      connection.on("NewConversationEvent", (answer: any) => {
-        console.log(answer);
-      });
+      connection.on(
+        "NewConversationEvent",
+        (conversation: ConversationResponse) => {
+          setConversations((prevConversations) => [
+            ...prevConversations,
+            conversation,
+          ]);
+        }
+      );
 
       // connection.invoke("NewConversationNotification");
     }
