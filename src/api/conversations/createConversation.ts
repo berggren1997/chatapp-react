@@ -1,14 +1,17 @@
 import { apiClient } from "../apiClient";
 
-export const createConversationRequest = async (
-  recipient: string
-): Promise<string> => {
+export const createConversationRequest = async (recipient: string) => {
   try {
-    const conversationId = await apiClient.post<string, string>(
+    const response = await apiClient.post<string, string | any>(
       "/api/conversation",
       recipient
     );
-    return conversationId;
+    if (response && response?.StatusCode === 400) {
+      console.log("do we get here?", response);
+
+      throw new Error(response.ErrorMessage);
+    }
+    return response;
   } catch (error) {
     throw error;
   }

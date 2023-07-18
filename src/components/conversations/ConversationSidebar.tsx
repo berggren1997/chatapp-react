@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
 
 interface Props {
@@ -18,10 +18,11 @@ const ConversationSidebar: React.FC<Props> = ({
 }) => {
   const [clickedConversation, setClickedConversation] = useState("");
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const handleClickedConversation = (conversation: ConversationResponse) => {
-    setClickedConversation(conversation.id);
-    setSelectedConversation(conversation);
+    // setClickedConversation(conversation.id);
+    // setSelectedConversation(conversation);
     navigate(`/conversations/${conversation.id}`);
   };
 
@@ -54,7 +55,7 @@ const ConversationSidebar: React.FC<Props> = ({
               onClick={() => handleClickedConversation(conversation)}
               className={`flex flex-col items-center justify-between p-3 hover:cursor-pointer 
           hover:bg-zinc-800 mx-2 rounded-md ${
-            conversation.id === clickedConversation && "bg-zinc-800"
+            conversation.id === id && "bg-zinc-800"
           }`}
             >
               <div className="flex flex-col h-full w-full items-start">

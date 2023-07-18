@@ -5,6 +5,8 @@ import ConversationPanel from "./components/conversations/ConversationPanel";
 import AuthenticatedRoute from "./guards/AuthenticatedRoute";
 import WrapperPage from "./pages/WrapperPage";
 import ConversationPanelFeed from "./components/conversations/ConversationPanelFeed";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
@@ -20,6 +22,7 @@ const App = () => {
             </Route>
           </Route>
         </Routes>
+        <ToastContainer />
       </div>
     </>
   );

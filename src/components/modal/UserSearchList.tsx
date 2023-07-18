@@ -3,6 +3,7 @@ import { createConversationRequest } from "../../api/conversations/createConvers
 import { FindUserResponse } from "../../types/users/userTypes";
 import { useState } from "react";
 import Participant from "./Participant";
+import { toast } from "react-toastify";
 
 interface Props {
   users: FindUserResponse[];
@@ -25,8 +26,18 @@ const UserSearchList: React.FC<Props> = ({
       hubConnection.invoke("NewConversationEvent", newConversationId);
       closeModal();
       navigate(`/conversations/${newConversationId}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      closeModal();
+      toast.error(`${error}`, {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
     }
   };
 
