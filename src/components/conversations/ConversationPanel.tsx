@@ -6,8 +6,8 @@ import { fetchConversationsRequest } from "../../api/conversations/getConversati
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import ConversationSidebar from "./ConversationSidebar";
 import ConversationPanelMembers from "./ConversationPanelMembers";
-import ModalOverlay from "../ModalOverlay";
-import CreateConversationContent from "./CreateConversationContent";
+import ModalOverlay from "../modal/ModalOverlay";
+import CreateConversationContent from "../modal/CreateConversationContent";
 import useSignalR from "../../hooks/useSignalR";
 
 const ConversationPanel = () => {

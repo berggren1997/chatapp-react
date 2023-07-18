@@ -1,12 +1,14 @@
 import { Outlet } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 
 const WrapperPage = () => {
   return (
-    <div className="flex flex-1">
-      <Outlet />
-      {/* <Sidebar /> */}
-      {/* <ConversationPanel /> */}
-    </div>
+    <>
+      <Sidebar />
+      <div className="flex flex-1">
+        <Outlet />
+      </div>
+    </>
   );
 };
 
