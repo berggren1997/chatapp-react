@@ -2,16 +2,50 @@ import { RxHamburgerMenu } from "react-icons/rx";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import { FiPhoneCall } from "react-icons/fi";
 import { BsTrash, BsCameraVideo } from "react-icons/bs";
+import { useEffect, useState } from "react";
 
 interface Props {
   conversation: ConversationResponse | undefined;
   currentUser: string;
+  callsConnection: any;
 }
 
 const ConversationPanelHeader: React.FC<Props> = ({
   conversation,
   currentUser,
+  callsConnection,
 }) => {
+  const [recipient, setRecipient] = useState({
+    recipient: "",
+    recipientId: "",
+  });
+
+  useEffect(() => {
+    if (conversation) {
+      if (currentUser === conversation?.conversationDetails?.creator) {
+        setRecipient({
+          recipient: conversation?.conversationDetails?.recipient,
+          recipientId: conversation?.conversationDetails?.recipientId!,
+        });
+      } else {
+        setRecipient({
+          recipient: conversation?.conversationDetails?.creator,
+          recipientId: conversation?.conversationDetails?.creatorId!,
+        });
+      }
+    }
+  }, [conversation]);
+
+  const handleCallUser = () => {
+    console.log(
+      "should call: " +
+        recipient.recipient +
+        " with userId: " +
+        recipient.recipientId
+    );
+    callsConnection.invoke("CallUser", recipient.recipientId);
+  };
+
   return (
     <div>
       <div className="flex items-center border-b-[1px] border-zinc-800 w-full h-[89px] bg-[#1e1e1e]">
@@ -33,6 +67,7 @@ const ConversationPanelHeader: React.FC<Props> = ({
               <FiPhoneCall
                 title="Soon to be added. Voicechat"
                 className="hover:cursor-pointer w-[25px] h-[22px]"
+                onClick={handleCallUser}
               />
               <BsCameraVideo
                 title="Will maybe be added. Videochat"

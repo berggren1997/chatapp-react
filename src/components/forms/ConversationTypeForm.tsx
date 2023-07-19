@@ -25,7 +25,6 @@ const ConversationTypeForm: React.FC<Props> = ({
       await connection.invoke(SEND_MESSAGE_EVENT, { message, conversationId });
       setMessage("");
     }
-    // console.log(message);
   };
   return (
     <div className="flex relative bg-[#1e1e1e]">

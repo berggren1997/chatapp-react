@@ -13,7 +13,8 @@ const ConversationPanelMembers: React.FC<Props> = ({
   currentUser,
 }) => {
   useEffect(() => {
-    console.log(conversationDetails);
+    if (conversationDetails) {
+    }
   }, [conversationDetails]);
 
   if (!conversationDetails) return null;
@@ -24,8 +25,7 @@ const ConversationPanelMembers: React.FC<Props> = ({
         <div className="mt-4 ml-2">
           <p className="text-sm text-zinc-400 uppercase mb-4 text-center mt-4">
             Members-
-            {conversationDetails &&
-              Object.keys(conversationDetails!.conversationDetails).length}
+            {conversationDetails && 2}
           </p>
           <div className="flex flex-col">
             <div className="flex items-center gap-3 mt-1 hover:bg-zinc-800 hover:cursor-pointer rounded-md p-2">

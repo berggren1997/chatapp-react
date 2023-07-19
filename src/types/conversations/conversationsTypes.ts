@@ -17,5 +17,7 @@ export type CreateConversationResponse = {
 
 type ConversationDetails = {
   creator: string;
+  creatorId?: string;
   recipient: string;
+  recipientId?: string;
 };

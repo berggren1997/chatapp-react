@@ -16,7 +16,7 @@ const Sidebar: React.FC = () => {
         setCurrentUser(data.username);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 

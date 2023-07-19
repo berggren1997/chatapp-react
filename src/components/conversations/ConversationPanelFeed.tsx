@@ -67,15 +67,11 @@ const ConversationPanelFeed: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("should fetch messages for conversation");
-
     fetchMessagesForConversation(1);
     setNextPageNumber(1);
   }, [id]);
 
   useEffect(() => {
-    console.log("fetch user req");
-
     fetchCurrentUser();
   }, []);
 

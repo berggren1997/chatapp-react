@@ -20,19 +20,22 @@ const ConversationPanel = () => {
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
+  const [incomingCall, setIncomingCall] = useState(false);
+  const [callingUserId, setCallingUserId] = useState("");
+  const [callingUserName, setCallingUserName] = useState("");
 
   const connection = useSignalR("http://localhost:5247/conversationHub");
+  const callsConnection = useSignalR("http://localhost:5247/callsHub");
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
   };
 
-  const getSelectedConversation = (
-    conversationId: string
-  ): ConversationResponse | undefined => {
+  const getSelectedConversation = () => {
     if (id) {
       const selectedConvo = conversations.filter((x) => x.id === id);
-      return selectedConvo[0];
+      const conversation = selectedConvo[0];
+      return conversation;
     }
   };
 
@@ -73,8 +76,6 @@ const ConversationPanel = () => {
 
   useEffect(() => {
     if (connection) {
-      console.log("this should work");
-
       connection.on(
         "NewConversationEvent",
         (conversation: ConversationResponse) => {
@@ -89,10 +90,55 @@ const ConversationPanel = () => {
     }
   }, [connection]);
 
+  useEffect(() => {
+    if (callsConnection) {
+      callsConnection.on(
+        "IncomingCall",
+        (callerId: string, callerName: string) => {
+          console.log(callerId, callerName);
+          setCallingUserId(callerId);
+          setCallingUserName(callerName);
+          setIncomingCall(true);
+        }
+      );
+
+      callsConnection.on("AcceptCall", (response: any) => {
+        console.log(response);
+        setIncomingCall(false);
+      });
+
+      callsConnection.on("DeclineCall", (response: any) => {
+        console.log(response);
+        setIncomingCall(false);
+      });
+    }
+  }, [callsConnection]);
+
+  const handleAnswerCall = () => {
+    if (callsConnection) {
+      callsConnection.invoke("AnswerCall", callingUserId);
+      setIncomingCall(false);
+    }
+  };
+
+  const handleDeclineCall = () => {
+    if (callsConnection) {
+      callsConnection.invoke("DeclineCall", callingUserId);
+      setIncomingCall(false);
+    }
+  };
+
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
+      {incomingCall && (
+        <div className="fixed border-2 border-red-500 w-full ml-[300px] flex items-center justify-center gap-5">
+          <p>{callingUserName} is calling you:</p>
+          <button onClick={handleAnswerCall}>ACCEPT</button>
+          <button onClick={handleDeclineCall}>DECLINE</button>
+        </div>
+      )}
       <ConversationSidebar
         conversations={conversations}
         setSelectedConversation={handleSelectedConversation}
@@ -101,13 +147,14 @@ const ConversationPanel = () => {
       />
       <div className="flex flex-col flex-1 bg-[#1e1e1e]">
         <ConversationPanelHeader
-          conversation={getSelectedConversation(id || "")}
+          conversation={getSelectedConversation()}
           currentUser={currentUser}
+          callsConnection={callsConnection}
         />
         <Outlet />
       </div>
       <ConversationPanelMembers
-        conversationDetails={getSelectedConversation(id || "")}
+        conversationDetails={getSelectedConversation()}
         currentUser={currentUser}
       />
       {openModal && (

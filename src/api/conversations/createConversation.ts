@@ -7,8 +7,6 @@ export const createConversationRequest = async (recipient: string) => {
       recipient
     );
     if (response && response?.StatusCode === 400) {
-      console.log("do we get here?", response);
-
       throw new Error(response.ErrorMessage);
     }
     return response;

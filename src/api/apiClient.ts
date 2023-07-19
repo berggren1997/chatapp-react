@@ -14,8 +14,6 @@ export const apiClient = {
       const data = await response.json();
       return data;
     } catch (error) {
-      console.log("fångar vi 400? Inne i ApiClient");
-
       throw error;
     }
   },
