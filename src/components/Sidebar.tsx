@@ -21,17 +21,19 @@ const Sidebar: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchCurrentUser();
+    // fetchCurrentUser();
   }, []);
   return (
     <div className="flex flex-col bg-[#1e1e1e]">
       <div className="p-3 mt-4 flex flex-col items-center">
-        <CgProfile className="w-[35px] h-[35px] hover:cursor-pointer" />
-        {currentUser && (
+        <CgProfile
+          className="w-[35px] h-[35px] hover:cursor-pointer"
+          title={`${currentUser && currentUser}`}
+        />
+        {/* {currentUser && (
           <span className="text-xs mt-3 text-zinc-400">{currentUser}</span>
-        )}
+        )} */}
       </div>
-      {/* <div className="border-b-[1px] border-zinc-800 w-full mt-[8px]"></div> */}
 
       <div className="flex flex-col flex-1 items-center">
         <BsChatDots className="mb-16 mt-16 w-[24px] h-[24px] hover:cursor-pointer" />

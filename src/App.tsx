@@ -8,6 +8,7 @@ import ConversationPanelFeed from "./components/conversations/ConversationPanelF
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CallPanel from "./components/calls/CallPanel";
+import TempPAGE from "./components/calls/TempPAGE";
 
 const App = () => {
   return (
@@ -18,6 +19,7 @@ const App = () => {
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="call" element={<CallPanel />} />
+          <Route path="/temp" element={<TempPAGE />} />
           <Route element={<AuthenticatedRoute children={<WrapperPage />} />}>
             <Route path="conversations" element={<ConversationPanel />}>
               <Route path=":id" element={<ConversationPanelFeed />} />

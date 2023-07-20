@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ConversationPanelHeader from "./ConversationPanelHeader";
-import { Outlet, useParams } from "react-router-dom";
+import { Outlet, useNavigate, useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
 import { fetchConversationsRequest } from "../../api/conversations/getConversations";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
@@ -9,6 +9,9 @@ import ConversationPanelMembers from "./ConversationPanelMembers";
 import ModalOverlay from "../modal/ModalOverlay";
 import CreateConversationContent from "../modal/CreateConversationContent";
 import useSignalR from "../../hooks/useSignalR";
+import IncomingCall from "../calls/IncomingCall";
+import { toast } from "react-toastify";
+import OutgoingCall from "../calls/OutgoingCall";
 
 const ConversationPanel = () => {
   const [selectedConversation, setSelectedConversation] =
@@ -23,9 +26,13 @@ const ConversationPanel = () => {
   const [incomingCall, setIncomingCall] = useState(false);
   const [callingUserId, setCallingUserId] = useState("");
   const [callingUserName, setCallingUserName] = useState("");
+  const [openCallModal, setOpenCallModal] = useState(false);
+  const [openOutgoingCallModal, setOpenOutgoingCallModal] = useState(false);
 
   const connection = useSignalR("http://localhost:5247/conversationHub");
   const callsConnection = useSignalR("http://localhost:5247/callsHub");
+
+  const navigate = useNavigate();
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
@@ -69,6 +76,10 @@ const ConversationPanel = () => {
     setOpenModal(false);
   };
 
+  const handleCloseCallsModal = () => {
+    setOpenCallModal(false);
+  };
+
   useEffect(() => {
     fetchUserConversations();
     fetchCurrentUser();
@@ -85,8 +96,6 @@ const ConversationPanel = () => {
           ]);
         }
       );
-
-      // connection.invoke("NewConversationNotification");
     }
   }, [connection]);
 
@@ -98,47 +107,34 @@ const ConversationPanel = () => {
           console.log(callerId, callerName);
           setCallingUserId(callerId);
           setCallingUserName(callerName);
-          setIncomingCall(true);
+          setOpenCallModal(true);
         }
       );
 
       callsConnection.on("AcceptCall", (response: any) => {
         console.log(response);
         setIncomingCall(false);
+        navigate("/call");
       });
 
       callsConnection.on("DeclineCall", (response: any) => {
         console.log(response);
         setIncomingCall(false);
+        toast.info(response, {
+          theme: "dark",
+        });
       });
     }
   }, [callsConnection]);
 
-  const handleAnswerCall = () => {
-    if (callsConnection) {
-      callsConnection.invoke("AnswerCall", callingUserId);
-      setIncomingCall(false);
-    }
-  };
-
-  const handleDeclineCall = () => {
-    if (callsConnection) {
-      callsConnection.invoke("DeclineCall", callingUserId);
-      setIncomingCall(false);
-    }
+  const handleOpenOutgoingCallModal = () => {
+    setOpenOutgoingCallModal(true);
   };
 
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
-      {incomingCall && (
-        <div className="fixed border-2 border-red-500 w-full ml-[300px] flex items-center justify-center gap-5">
-          <p>{callingUserName} is calling you:</p>
-          <button onClick={handleAnswerCall}>ACCEPT</button>
-          <button onClick={handleDeclineCall}>DECLINE</button>
-        </div>
-      )}
       <ConversationSidebar
         conversations={conversations}
         setSelectedConversation={handleSelectedConversation}
@@ -150,6 +146,7 @@ const ConversationPanel = () => {
           conversation={getSelectedConversation()}
           currentUser={currentUser}
           callsConnection={callsConnection}
+          openOutgoingCallModal={handleOpenOutgoingCallModal}
         />
         <Outlet />
       </div>
@@ -167,6 +164,20 @@ const ConversationPanel = () => {
           }
         />
       )}
+      {openCallModal && (
+        <ModalOverlay
+          children={
+            <IncomingCall
+              callingUsername={callingUserName}
+              callingUserId={callingUserId}
+              callsConnection={callsConnection}
+              closeCallModal={handleCloseCallsModal}
+            />
+          }
+        />
+      )}
+
+      {openOutgoingCallModal && <ModalOverlay children={<OutgoingCall />} />}
     </>
   );
 };

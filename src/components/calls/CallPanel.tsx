@@ -66,8 +66,7 @@ const CallPanel: React.FC = () => {
         <div className="rounded-md w-[720px] mt-8 bg-zinc-900 flex flex-col">
           <div className="flex items-center justify-center mt-2">
             <p className="text-sm text-zinc-400 mt-2">
-              In conversation with{" "}
-              <span className="text-slate-200">andreas</span>
+              In call with <span className="text-slate-200">andreas</span>
             </p>
           </div>
 
