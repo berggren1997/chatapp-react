@@ -1,6 +1,5 @@
 import { IoMdCall } from "react-icons/io";
 import { MdCallEnd } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
 
 interface Props {
   callingUsername?: string;
@@ -15,13 +14,10 @@ const IncomingCall: React.FC<Props> = ({
   callsConnection,
   closeCallModal,
 }) => {
-  const navigate = useNavigate();
-
   const handleAnswerCall = () => {
     if (callsConnection) {
       callsConnection.invoke("AnswerCall", callingUserId);
       closeCallModal();
-      navigate("/call");
     }
   };
 

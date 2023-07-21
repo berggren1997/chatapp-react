@@ -8,7 +8,7 @@ interface Props {
   closeCallModal?: () => void;
 }
 
-const OutgoingCall: React.FC<Props> = () => {
+const OutgoingCall: React.FC<Props> = ({ callingUsername }) => {
   const navigate = useNavigate();
 
   return (
@@ -17,7 +17,7 @@ const OutgoingCall: React.FC<Props> = () => {
         <div className="flex mb-4 w-full items-center justify-center">
           <div className="flex gap-2 items-center">
             <p className="text-zinc-400 text-lg">Calling:</p>
-            <p className="text-zinc-200">andreas</p>
+            <p className="text-zinc-200">{callingUsername}</p>
             {/* <div className="bg-red-500 w-[35px] h-[35px] rounded-full"></div> */}
           </div>
         </div>

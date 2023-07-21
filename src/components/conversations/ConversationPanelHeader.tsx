@@ -9,13 +9,15 @@ interface Props {
   currentUser: string;
   callsConnection: any;
   openOutgoingCallModal: () => void;
+  setCalledUsername: (username: string) => void;
 }
 
 const ConversationPanelHeader: React.FC<Props> = ({
   conversation,
   currentUser,
   callsConnection,
-  openOutgoingCallModal
+  openOutgoingCallModal,
+  setCalledUsername,
 }) => {
   const [recipient, setRecipient] = useState({
     recipient: "",
@@ -32,11 +34,11 @@ const ConversationPanelHeader: React.FC<Props> = ({
       } else {
         setRecipient({
           recipient: conversation?.conversationDetails?.creator,
-          recipientId: conversation?.conversationDetails?.creatorId!,
+          recipientId: conversation.conversationDetails.creatorId!,
         });
       }
     }
-  }, [conversation]);
+  }, [conversation, currentUser]);
 
   const handleCallUser = () => {
     console.log(
@@ -47,6 +49,7 @@ const ConversationPanelHeader: React.FC<Props> = ({
     );
     callsConnection.invoke("CallUser", recipient.recipientId);
     openOutgoingCallModal();
+    setCalledUsername(recipient.recipient);
   };
 
   return (

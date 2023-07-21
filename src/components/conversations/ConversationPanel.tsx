@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import ConversationPanelHeader from "./ConversationPanelHeader";
-import { Outlet, useNavigate, useParams } from "react-router-dom";
+import { Outlet, useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
 import { fetchConversationsRequest } from "../../api/conversations/getConversations";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
@@ -12,6 +12,7 @@ import useSignalR from "../../hooks/useSignalR";
 import IncomingCall from "../calls/IncomingCall";
 import { toast } from "react-toastify";
 import OutgoingCall from "../calls/OutgoingCall";
+import CallPanel from "../calls/CallPanel";
 
 const ConversationPanel = () => {
   const [selectedConversation, setSelectedConversation] =
@@ -26,13 +27,13 @@ const ConversationPanel = () => {
   const [incomingCall, setIncomingCall] = useState(false);
   const [callingUserId, setCallingUserId] = useState("");
   const [callingUserName, setCallingUserName] = useState("");
-  const [openCallModal, setOpenCallModal] = useState(false);
+  const [outgoingCallUsername, setOutgoingCallUsername] = useState("");
+  const [openIncomingCallModal, setOpenIncomingCallModal] = useState(false);
   const [openOutgoingCallModal, setOpenOutgoingCallModal] = useState(false);
+  const [acceptedCall, setAcceptedCall] = useState(false);
 
   const connection = useSignalR("http://localhost:5247/conversationHub");
   const callsConnection = useSignalR("http://localhost:5247/callsHub");
-
-  const navigate = useNavigate();
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
@@ -77,7 +78,7 @@ const ConversationPanel = () => {
   };
 
   const handleCloseCallsModal = () => {
-    setOpenCallModal(false);
+    setOpenIncomingCallModal(false);
   };
 
   useEffect(() => {
@@ -107,19 +108,21 @@ const ConversationPanel = () => {
           console.log(callerId, callerName);
           setCallingUserId(callerId);
           setCallingUserName(callerName);
-          setOpenCallModal(true);
+          setOpenIncomingCallModal(true);
         }
       );
 
       callsConnection.on("AcceptCall", (response: any) => {
         console.log(response);
         setIncomingCall(false);
-        navigate("/call");
+        setAcceptedCall(true);
+        setOpenOutgoingCallModal(false);
       });
 
       callsConnection.on("DeclineCall", (response: any) => {
         console.log(response);
         setIncomingCall(false);
+        setOpenOutgoingCallModal(false);
         toast.info(response, {
           theme: "dark",
         });
@@ -129,6 +132,10 @@ const ConversationPanel = () => {
 
   const handleOpenOutgoingCallModal = () => {
     setOpenOutgoingCallModal(true);
+  };
+
+  const setCalledUsername = (username: string) => {
+    setOutgoingCallUsername(username);
   };
 
   if (isLoading) return <div>Loading...</div>;
@@ -147,7 +154,9 @@ const ConversationPanel = () => {
           currentUser={currentUser}
           callsConnection={callsConnection}
           openOutgoingCallModal={handleOpenOutgoingCallModal}
+          setCalledUsername={setCalledUsername}
         />
+        {acceptedCall && <CallPanel />}
         <Outlet />
       </div>
       <ConversationPanelMembers
@@ -164,7 +173,7 @@ const ConversationPanel = () => {
           }
         />
       )}
-      {openCallModal && (
+      {openIncomingCallModal && (
         <ModalOverlay
           children={
             <IncomingCall
@@ -177,7 +186,11 @@ const ConversationPanel = () => {
         />
       )}
 
-      {openOutgoingCallModal && <ModalOverlay children={<OutgoingCall />} />}
+      {openOutgoingCallModal && (
+        <ModalOverlay
+          children={<OutgoingCall callingUsername={outgoingCallUsername} />}
+        />
+      )}
     </>
   );
 };

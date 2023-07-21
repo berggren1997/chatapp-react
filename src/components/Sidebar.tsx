@@ -1,4 +1,4 @@
-import { CgProfile } from "react-icons/cg";
+import { RxAvatar } from "react-icons/rx";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { BsChatDots } from "react-icons/bs";
 import { LiaUserFriendsSolid } from "react-icons/lia";
@@ -26,9 +26,9 @@ const Sidebar: React.FC = () => {
   return (
     <div className="flex flex-col bg-[#1e1e1e]">
       <div className="p-3 mt-4 flex flex-col items-center">
-        <CgProfile
+        <RxAvatar
           className="w-[35px] h-[35px] hover:cursor-pointer"
-          title={`${currentUser && currentUser}`}
+          // title={`${currentUser && currentUser}`}
         />
         {/* {currentUser && (
           <span className="text-xs mt-3 text-zinc-400">{currentUser}</span>
