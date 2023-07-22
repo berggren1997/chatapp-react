@@ -4,45 +4,22 @@ import { BsChatDots } from "react-icons/bs";
 import { LiaUserFriendsSolid } from "react-icons/lia";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { FiSettings } from "react-icons/fi";
-import { useState, useEffect } from "react";
-import { meRequest } from "../api/auth/me";
 
 const Sidebar: React.FC = () => {
-  const [currentUser, setCurrentUser] = useState("");
-
-  const fetchCurrentUser = async () => {
-    const userData = await meRequest()
-      .then((data) => {
-        setCurrentUser(data.username);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  };
-
-  useEffect(() => {
-    // fetchCurrentUser();
-  }, []);
   return (
     <div className="flex flex-col bg-[#1e1e1e]">
       <div className="p-3 mt-4 flex flex-col items-center">
-        <RxAvatar
-          className="w-[35px] h-[35px] hover:cursor-pointer"
-          // title={`${currentUser && currentUser}`}
-        />
-        {/* {currentUser && (
-          <span className="text-xs mt-3 text-zinc-400">{currentUser}</span>
-        )} */}
+        <RxAvatar className="w-[35px] h-[35px] hover:cursor-pointer" />
       </div>
 
-      <div className="flex flex-col flex-1 items-center">
-        <BsChatDots className="mb-16 mt-16 w-[24px] h-[24px] hover:cursor-pointer" />
-        <LiaUserFriendsSolid className="mb-16 w-[24px] h-[24px] hover:cursor-pointer" />
-        <TbBuildingCommunity className="mb-16 w-[24px] h-[24px] hover:cursor-pointer" />
-        <FiSettings className="mb-16 w-[24px] h-[24px] hover:cursor-pointer" />
+      <div className="flex flex-col mt-16 gap-4 items-center">
+        <BsChatDots className="w-[24px] h-[24px] hover:cursor-pointer" />
+        <LiaUserFriendsSolid className="w-[24px] h-[24px] hover:cursor-pointer" />
+        <TbBuildingCommunity className="w-[24px] h-[24px] hover:cursor-pointer" />
       </div>
 
-      <div className="mt-8 items-center flex justify-center mb-4">
+      <div className="mt-8 items-center flex flex-col h-full justify-end gap-6 mb-4">
+        <FiSettings className="w-[30px] h-[30px] hover:cursor-pointer" />
         <RiLogoutCircleLine className="w-[30px] h-[30px] hover:cursor-pointer" />
       </div>
     </div>

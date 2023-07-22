@@ -19,6 +19,10 @@ const ConversationPanelHeader: React.FC<Props> = ({
   openOutgoingCallModal,
   setCalledUsername,
 }) => {
+  const [creator, setCreator] = useState({
+    creator: "",
+    creatorId: "",
+  });
   const [recipient, setRecipient] = useState({
     recipient: "",
     recipientId: "",
@@ -31,22 +35,24 @@ const ConversationPanelHeader: React.FC<Props> = ({
           recipient: conversation?.conversationDetails?.recipient,
           recipientId: conversation?.conversationDetails?.recipientId!,
         });
+        setCreator({
+          creator: conversation?.conversationDetails?.creator,
+          creatorId: conversation?.conversationDetails?.creatorId!,
+        });
       } else {
         setRecipient({
           recipient: conversation?.conversationDetails?.creator,
           recipientId: conversation.conversationDetails.creatorId!,
+        });
+        setCreator({
+          creator: conversation?.conversationDetails?.recipient,
+          creatorId: conversation?.conversationDetails?.recipientId!,
         });
       }
     }
   }, [conversation, currentUser]);
 
   const handleCallUser = () => {
-    console.log(
-      "should call: " +
-        recipient.recipient +
-        " with userId: " +
-        recipient.recipientId
-    );
     callsConnection.invoke("CallUser", recipient.recipientId);
     openOutgoingCallModal();
     setCalledUsername(recipient.recipient);
@@ -71,18 +77,11 @@ const ConversationPanelHeader: React.FC<Props> = ({
           {currentUser && conversation && (
             <div className="flex gap-6">
               <FiPhoneCall
-                title="Soon to be added. Voicechat"
                 className="hover:cursor-pointer w-[25px] h-[22px]"
                 onClick={handleCallUser}
               />
-              <BsCameraVideo
-                title="Will maybe be added. Videochat"
-                className="hover:cursor-pointer w-[25px] h-[22px]"
-              />
-              <BsTrash
-                title="Soon to be added. Delete conversation"
-                className="hover:cursor-pointer w-[25px] h-[22px]"
-              />
+              <BsCameraVideo className="hover:cursor-pointer w-[25px] h-[22px]" />
+              <BsTrash className="hover:cursor-pointer w-[25px] h-[22px]" />
               <RxHamburgerMenu className="block md:hidden w-[32px] h-[24px] hover:cursor-pointer" />
             </div>
           )}

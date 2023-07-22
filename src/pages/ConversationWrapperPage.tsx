@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 
-const WrapperPage = () => {
+const ConversationWrapperPage = () => {
   return (
     <>
       <Sidebar />
@@ -12,4 +12,4 @@ const WrapperPage = () => {
   );
 };
 
-export default WrapperPage;
+export default ConversationWrapperPage;

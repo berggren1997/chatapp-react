@@ -6,6 +6,8 @@ interface Props {
   callingUserId?: string;
   callsConnection?: any;
   closeCallModal: () => void;
+  toggleVoiceChatAreaForRecipient: () => void;
+  // TODO: Lägg till ett sätt att visa voice-chat area för båda caller och recipient. Nu visas det bara för caller när man ringer någon som svarar
 }
 
 const IncomingCall: React.FC<Props> = ({
@@ -13,11 +15,13 @@ const IncomingCall: React.FC<Props> = ({
   callingUserId,
   callsConnection,
   closeCallModal,
+  toggleVoiceChatAreaForRecipient,
 }) => {
   const handleAnswerCall = () => {
     if (callsConnection) {
-      callsConnection.invoke("AnswerCall", callingUserId);
+      callsConnection.invoke("AnswerCall2", callingUserId);
       closeCallModal();
+      // toggleVoiceChatAreaForRecipient();
     }
   };
 

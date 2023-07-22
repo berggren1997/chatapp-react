@@ -3,12 +3,11 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ConversationPanel from "./components/conversations/ConversationPanel";
 import AuthenticatedRoute from "./guards/AuthenticatedRoute";
-import WrapperPage from "./pages/WrapperPage";
+import ConversationWrapperPage from "./pages/ConversationWrapperPage";
 import ConversationPanelFeed from "./components/conversations/ConversationPanelFeed";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CallPanel from "./components/calls/CallPanel";
-import TempPAGE from "./components/calls/TempPAGE";
+import TEstDelete123 from "./pages/TEstDelete123";
 
 const App = () => {
   return (
@@ -18,9 +17,12 @@ const App = () => {
           <Route path="/" element={<Navigate to="/conversations" replace />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
-          <Route path="call" element={<CallPanel />} />
-          <Route path="/temp" element={<TempPAGE />} />
-          <Route element={<AuthenticatedRoute children={<WrapperPage />} />}>
+          <Route path="temp" element={<TEstDelete123 />} />
+          <Route
+            element={
+              <AuthenticatedRoute children={<ConversationWrapperPage />} />
+            }
+          >
             <Route path="conversations" element={<ConversationPanel />}>
               <Route path=":id" element={<ConversationPanelFeed />} />
             </Route>

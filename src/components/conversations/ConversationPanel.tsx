@@ -31,12 +31,18 @@ const ConversationPanel = () => {
   const [openIncomingCallModal, setOpenIncomingCallModal] = useState(false);
   const [openOutgoingCallModal, setOpenOutgoingCallModal] = useState(false);
   const [acceptedCall, setAcceptedCall] = useState(false);
+  const [toggleVoiceChatRecipient, setToggleVoiceChatRecipient] =
+    useState(false);
 
   const connection = useSignalR("http://localhost:5247/conversationHub");
   const callsConnection = useSignalR("http://localhost:5247/callsHub");
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
+  };
+
+  const handleToggleVoiceChatRecipient = () => {
+    setToggleVoiceChatRecipient(true);
   };
 
   const getSelectedConversation = () => {
@@ -105,7 +111,6 @@ const ConversationPanel = () => {
       callsConnection.on(
         "IncomingCall",
         (callerId: string, callerName: string) => {
-          console.log(callerId, callerName);
           setCallingUserId(callerId);
           setCallingUserName(callerName);
           setOpenIncomingCallModal(true);
@@ -113,14 +118,12 @@ const ConversationPanel = () => {
       );
 
       callsConnection.on("AcceptCall", (response: any) => {
-        console.log(response);
         setIncomingCall(false);
         setAcceptedCall(true);
         setOpenOutgoingCallModal(false);
       });
 
       callsConnection.on("DeclineCall", (response: any) => {
-        console.log(response);
         setIncomingCall(false);
         setOpenOutgoingCallModal(false);
         toast.info(response, {
@@ -156,7 +159,7 @@ const ConversationPanel = () => {
           openOutgoingCallModal={handleOpenOutgoingCallModal}
           setCalledUsername={setCalledUsername}
         />
-        {acceptedCall && <CallPanel />}
+        {acceptedCall && <CallPanel user={currentUser} />}
         <Outlet />
       </div>
       <ConversationPanelMembers
@@ -181,6 +184,7 @@ const ConversationPanel = () => {
               callingUserId={callingUserId}
               callsConnection={callsConnection}
               closeCallModal={handleCloseCallsModal}
+              toggleVoiceChatAreaForRecipient={handleToggleVoiceChatRecipient}
             />
           }
         />

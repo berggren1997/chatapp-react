@@ -12,7 +12,11 @@ import { RxExit } from "react-icons/rx";
 import { LuMonitorOff } from "react-icons/lu";
 import { useState } from "react";
 
-const CallPanel: React.FC = () => {
+interface Props {
+  user: string;
+}
+
+const CallPanel: React.FC<Props> = ({ user }) => {
   const [micOn, setMicOn] = useState(true);
   const [cameraOn, setCameraOn] = useState(false);
   const [screenOn, setScreenOn] = useState(false);
@@ -22,46 +26,14 @@ const CallPanel: React.FC = () => {
       {/* PARTICIPANTS */}
       <div className="flex flex-col items-center justify-center w-full gap-5 bg-zinc-900">
         <div className="flex flex-wrap justify-center gap-5">
-          <div className="flex flex-col m-6 w-[300px] bg-zinc-800 rounded-md">
-            <div className="flex items-center justify-between mx-4 mt-2">
-              <BsPinAngle className="w-[20px] h-[20px]" />
-              <BsThreeDots className="w-[20px] h-[20px]" />
-            </div>
-
-            <div className="flex items-center justify-center mt-12 mb-10">
-              <div className="bg-slate-300 w-[80px] h-[84px] rounded-full relative">
-                <span className="absolute top-7 left-[31px] text-red-500 text-2xl font-bold">
-                  H
-                </span>
-              </div>
-            </div>
-
-            <div className="ml-4 mt-6 mb-4 flex">
-              <p className="text-slate-200 bg-slate-900 p-2 text-xs rounded-md">
-                hardswap
-              </p>
-            </div>
+          {/* {user && ( */}
+          <div className="flex items-center justify-center mt-12 mb-10">
+            <div className="bg-blue-500 w-[180px] h-[184px] rounded-full relative"></div>
           </div>
+          {/* )} */}
 
-          <div className="flex flex-col m-6 w-[300px] bg-zinc-800 rounded-md">
-            <div className="flex items-center justify-between mx-4 mt-2">
-              <BsPinAngle className="w-[20px] h-[20px]" />
-              <BsThreeDots className="w-[20px] h-[20px]" />
-            </div>
-
-            <div className="flex items-center justify-center mt-12 mb-10">
-              <div className="bg-slate-300 w-[80px] h-[84px] rounded-full relative">
-                <span className="absolute top-7 left-[31px] text-red-500 text-2xl font-bold">
-                  A
-                </span>
-              </div>
-            </div>
-
-            <div className="ml-4 mt-6 mb-4 flex">
-              <p className="text-slate-200 bg-slate-900 p-2 text-xs rounded-md">
-                andreas
-              </p>
-            </div>
+          <div className="flex items-center justify-center mt-12 mb-10">
+            <div className="bg-red-500 w-[180px] h-[184px] rounded-full relative"></div>
           </div>
         </div>
 
@@ -113,7 +85,7 @@ const CallPanel: React.FC = () => {
               />
             )}
             <RxExit
-              className="w-[40px] h-[40px] ml-4 hover:cursor-pointer text-red bg-red-500 p-2 rounded-lg"
+              className="w-[40px] h-[40px] hover:cursor-pointer text-red bg-red-500 p-2 rounded-lg"
               title="Leave room"
             />
           </div>
