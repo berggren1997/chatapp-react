@@ -69,6 +69,14 @@ const ConversationPanel = () => {
   const fetchUserConversations = async () => {
     try {
       const conversationData = await fetchConversationsRequest();
+      const sortedConversations = conversationData.sort(
+        (a, b) =>
+          new Date(b.lastMessageDetails.sentAt).getTime() -
+          new Date(a.lastMessageDetails.sentAt).getTime()
+      );
+      console.log("Not sorted?", conversationData);
+      console.log("Sorted?", sortedConversations);
+
       setConversations(conversationData);
     } catch (error) {
       console.error(error);

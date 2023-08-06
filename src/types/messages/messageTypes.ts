@@ -1,7 +1,7 @@
 export type MessageResponse = {
   message: string;
   sender: string;
-  sentAt: string;
+  sentAt: Date;
 };
 
 export type MessageRequest = {

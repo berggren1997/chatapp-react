@@ -2,7 +2,7 @@ import { MessageResponse } from "../messages/messageTypes";
 
 export type ConversationResponse = {
   id: string;
-  createdAt: string;
+  createdAt: Date;
   conversationDetails: ConversationDetails;
   lastMessageDetails: MessageResponse;
 };

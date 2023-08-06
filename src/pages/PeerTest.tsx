@@ -11,7 +11,7 @@ const PeerTest = () => {
     e.preventDefault();
     if (!peer) return peer;
     navigator.mediaDevices
-      .getUserMedia({ video: false, audio: true })
+      .getUserMedia({ video: true, audio: true })
       .then((stream) => {
         localVideoRef.current!.srcObject = stream;
         localVideoRef.current!.play();
@@ -32,7 +32,7 @@ const PeerTest = () => {
 
     peer.on("call", (call) => {
       navigator.mediaDevices
-        .getUserMedia({ video: false, audio: true })
+        .getUserMedia({ video: true, audio: true })
         .then((mediaStream) => {
           call.answer(mediaStream);
           console.log("call from peer");
@@ -54,8 +54,10 @@ const PeerTest = () => {
         />
         <button>Call</button>
       </form>
-      <video ref={localVideoRef}></video>
-      <video ref={remoteVideoRef}></video>
+      <div className="flex">
+        <video ref={localVideoRef}></video>
+        <video ref={remoteVideoRef}></video>
+      </div>
     </div>
   );
 };

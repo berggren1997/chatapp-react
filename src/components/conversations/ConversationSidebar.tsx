@@ -12,22 +12,15 @@ interface Props {
 
 const ConversationSidebar: React.FC<Props> = ({
   conversations,
-  setSelectedConversation,
   currentUser,
   openModal,
 }) => {
-  const [clickedConversation, setClickedConversation] = useState("");
   const navigate = useNavigate();
   const { id } = useParams();
 
   const handleClickedConversation = (conversation: ConversationResponse) => {
-    // setClickedConversation(conversation.id);
-    // setSelectedConversation(conversation);
     navigate(`/conversations/${conversation.id}`);
   };
-
-  // if (conversations === undefined || conversations.length === 0)
-  //   return <div>No conversations</div>;
 
   return (
     <div className="hidden md:flex flex-col h-full w-[300px] border-r-[1px] border-zinc-800 overflow-y-scroll">
