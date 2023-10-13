@@ -134,7 +134,7 @@ const ConversationPanelFeed: React.FC = () => {
                         <p className="text-[16px]">{message.sender}</p>
                         <span className="text-xs text-slate-400">
                           {/* Yesterday - 17:15 */}
-                          {message.sentAt.split("T")[0]}
+                          {message.sentAt.toString().split("T")[0]}
                         </span>
                       </React.Fragment>
                     )}

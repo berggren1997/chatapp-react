@@ -4,7 +4,7 @@ import Sidebar from "../components/Sidebar";
 const ConversationWrapperPage = () => {
   return (
     <>
-      {/* <Sidebar /> */}
+      <Sidebar />
       <div className="flex flex-1">
         <Outlet />
       </div>

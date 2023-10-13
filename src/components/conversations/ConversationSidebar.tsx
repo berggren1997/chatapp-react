@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
+import useSignalR from "../../hooks/useSignalR";
 
 interface Props {
   conversations: ConversationResponse[];

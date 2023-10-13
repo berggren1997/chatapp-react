@@ -13,6 +13,7 @@ import IncomingCall from "../calls/IncomingCall";
 import { toast } from "react-toastify";
 import OutgoingCall from "../calls/OutgoingCall";
 import CallPanel from "../calls/CallPanel";
+import { MessageResponse } from "../../types/messages/messageTypes";
 
 const ConversationPanel = () => {
   const [selectedConversation, setSelectedConversation] =
@@ -36,6 +37,7 @@ const ConversationPanel = () => {
 
   const connection = useSignalR("http://localhost:5247/conversationHub");
   const callsConnection = useSignalR("http://localhost:5247/callsHub");
+  const messageConnection = useSignalR("http://localhost:5247/messageHub");
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
@@ -98,6 +100,17 @@ const ConversationPanel = () => {
   useEffect(() => {
     fetchUserConversations();
     fetchCurrentUser();
+  }, []);
+
+  useEffect(() => {
+    if (messageConnection) {
+      messageConnection.on(
+        "OnMessageReceived",
+        (msgResponse: MessageResponse) => {
+          console.log(msgResponse);
+        }
+      );
+    }
   }, []);
 
   useEffect(() => {
