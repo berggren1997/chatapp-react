@@ -3,17 +3,41 @@ import { LoginType } from "../../types/auth/authTypes";
 import { Link, useNavigate } from "react-router-dom";
 import { loginRequest } from "../../api/auth/login";
 import { useState } from "react";
+import { toast } from "react-toastify";
+
 const LoginForm = () => {
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const submitForm = async (formValues: LoginType) => {
-    const data = await loginRequest(formValues);
+  const callToast = (message: any) => {
+    toast.error(message, {
+      position: "bottom-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "dark",
+    });
+  };
 
+  const submitForm = async (formValues: LoginType) => {
+    setLoading(true);
+    const data = await loginRequest(formValues);
+    console.log(data);
     if (!data.success) {
-      setError(data.errorMessage);
+      if (data.errorMessage) {
+        callToast(data.errorMessage);
+      } else if (data.errors) {
+        Object.values(data.errors).map((item: any) => {
+          console.log(item);
+          callToast(item[0]);
+        });
+      }
+      setLoading(false);
       return;
     }
+    setLoading(false);
     navigate("/conversations");
   };
   const {
@@ -55,16 +79,24 @@ const LoginForm = () => {
           type="password"
           placeholder="Password"
           className="bg-[#2b2b2b] h-[52px] w-full p-4 focus:outline-none rounded-md"
-          {...register("password")}
+          {...register("password", {
+            required: "Password must be provided.",
+            minLength: {
+              value: 5,
+              message: "Password must be at least 5 characters long.",
+            },
+          })}
         />
+        {errors.password?.message && (
+          <label className="text-red-500">{errors.password?.message}</label>
+        )}
       </div>
-
-      <div className="w-full">
+      <div className="w-full mt-1">
         <button
           type="submit"
           className="bg-[#0000FF] hover:bg-[#1414ff] w-full rounded-md p-3"
         >
-          Login
+          {loading ? "Loading..." : "Login"}
         </button>
       </div>
       <div className="flex gap-3">

@@ -3,6 +3,7 @@ export type MessageResponse = {
   sender: string;
   sentAt: Date;
   conversationId: string;
+  error?: any;
 };
 
 export type MessageRequest = {

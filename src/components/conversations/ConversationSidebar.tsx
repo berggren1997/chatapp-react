@@ -1,26 +1,35 @@
-import { useState } from "react";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import { useNavigate, useParams } from "react-router-dom";
 import { AiOutlinePlus } from "react-icons/ai";
-import useSignalR from "../../hooks/useSignalR";
+import { useState } from "react";
 
 interface Props {
   conversations: ConversationResponse[];
   setSelectedConversation: (conversationDetails: ConversationResponse) => void;
   currentUser: string;
   openModal: () => void;
+  filterUserConversation: (username: string) => void;
 }
 
 const ConversationSidebar: React.FC<Props> = ({
   conversations,
   currentUser,
   openModal,
+  filterUserConversation,
 }) => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const handleClickedConversation = (conversation: ConversationResponse) => {
     navigate(`/conversations/${conversation.id}`);
+    setSearchTerm("");
+    filterUserConversation("");
+  };
+
+  const searchUserConversation = (e: any) => {
+    setSearchTerm(e.target.value);
+    filterUserConversation(e.target.value);
   };
 
   return (
@@ -30,10 +39,13 @@ const ConversationSidebar: React.FC<Props> = ({
       <div className="flex flex-col mt-8 gap-3">
         <div className="flex flex-col items-center justify-center mb-4">
           <div className="flex items-center justify-center">
+            {/* TODO: Lägg till sökfunktionalitet */}
             <input
               className="text-white bg-[#262626] p-3 focus:outline-none rounded-lg w-full mx-1 h-[38px] mb-3 text-sm"
               type="text"
               placeholder="Search Conversations..."
+              onChange={searchUserConversation}
+              value={searchTerm}
             />
             <AiOutlinePlus
               onClick={openModal}

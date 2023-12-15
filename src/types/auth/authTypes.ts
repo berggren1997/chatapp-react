@@ -18,6 +18,7 @@ export type LoginType = {
 export type LoginResponse = {
   success: boolean;
   errorMessage: string;
+  errors?: any;
 };
 
 export type MeResponse = {

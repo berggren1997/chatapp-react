@@ -9,10 +9,6 @@ import ConversationPanelMembers from "./ConversationPanelMembers";
 import ModalOverlay from "../modal/ModalOverlay";
 import CreateConversationContent from "../modal/CreateConversationContent";
 import useSignalR from "../../hooks/useSignalR";
-import IncomingCall from "../calls/IncomingCall";
-import { toast } from "react-toastify";
-import OutgoingCall from "../calls/OutgoingCall";
-import CallPanel from "../calls/CallPanel";
 import { MessageResponse } from "../../types/messages/messageTypes";
 
 const ConversationPanel = () => {
@@ -21,35 +17,25 @@ const ConversationPanel = () => {
   const [conversations, setConversations] = useState<ConversationResponse[]>(
     []
   );
+  const [filteredConversations, setFilteredConversations] = useState<
+    ConversationResponse[]
+  >([]);
+
   const [currentUser, setCurrentUser] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
-  const [incomingCall, setIncomingCall] = useState(false);
-  const [callingUserId, setCallingUserId] = useState("");
-  const [callingUserName, setCallingUserName] = useState("");
-  const [outgoingCallUsername, setOutgoingCallUsername] = useState("");
-  const [openIncomingCallModal, setOpenIncomingCallModal] = useState(false);
-  const [openOutgoingCallModal, setOpenOutgoingCallModal] = useState(false);
-  const [acceptedCall, setAcceptedCall] = useState(false);
-  const [toggleVoiceChatRecipient, setToggleVoiceChatRecipient] =
-    useState(false);
 
   const connection = useSignalR("http://localhost:5247/conversationHub");
-  const callsConnection = useSignalR("http://localhost:5247/callsHub");
   const messageConnection = useSignalR("http://localhost:5247/messageHub");
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
   };
 
-  const handleToggleVoiceChatRecipient = () => {
-    setToggleVoiceChatRecipient(true);
-  };
-
   const getSelectedConversation = () => {
     if (id) {
-      const selectedConvo = conversations.filter((x) => x.id === id);
+      const selectedConvo = filteredConversations.filter((x) => x.id === id);
       const conversation = selectedConvo[0];
       return conversation;
     }
@@ -68,21 +54,40 @@ const ConversationPanel = () => {
       });
   };
 
+  // TODO: Fixa så att konversationer/användarna sorteras i realtid
   const fetchUserConversations = async () => {
     try {
       const conversationData = await fetchConversationsRequest();
-      const sortedConversations = conversationData.sort(
+      conversationData.sort(
         (a, b) =>
           new Date(b.lastMessageDetails.sentAt).getTime() -
           new Date(a.lastMessageDetails.sentAt).getTime()
       );
-      console.log("Not sorted?", conversationData);
-      console.log("Sorted?", sortedConversations);
-
       setConversations(conversationData);
+      setFilteredConversations(conversationData);
     } catch (error) {
       console.error(error);
     }
+  };
+
+  // TODO: Lägg till en debounce, så vi inte söker efter varje bokstav
+  // OBS: Detta är endast relevant IFALL vi faktiskt går till servern. Sortering på klientsidan
+  // fungerar fint att påbörja filtrering direkt
+  const filterUserConversations = (username: string) => {
+    if (username === "") {
+      setFilteredConversations(conversations);
+      return;
+    }
+    console.log("starting filter on letter: " + username);
+
+    const filteredConvos = conversations.filter((u) => {
+      if (u.conversationDetails.recipient == currentUser) {
+        return u.conversationDetails.creator.includes(username);
+      } else {
+        return u.conversationDetails.recipient.includes(username);
+      }
+    });
+    setFilteredConversations(filteredConvos);
   };
 
   const handleOpenModal = () => {
@@ -91,10 +96,6 @@ const ConversationPanel = () => {
 
   const handleCloseModal = () => {
     setOpenModal(false);
-  };
-
-  const handleCloseCallsModal = () => {
-    setOpenIncomingCallModal(false);
   };
 
   useEffect(() => {
@@ -118,6 +119,11 @@ const ConversationPanel = () => {
       connection.on(
         "NewConversationEvent",
         (conversation: ConversationResponse) => {
+          console.log("nu kom vi hit", conversation);
+          setFilteredConversations((prevConversations) => [
+            ...prevConversations,
+            conversation,
+          ]);
           setConversations((prevConversations) => [
             ...prevConversations,
             conversation,
@@ -127,60 +133,22 @@ const ConversationPanel = () => {
     }
   }, [connection]);
 
-  useEffect(() => {
-    if (callsConnection) {
-      callsConnection.on(
-        "IncomingCall",
-        (callerId: string, callerName: string) => {
-          setCallingUserId(callerId);
-          setCallingUserName(callerName);
-          setOpenIncomingCallModal(true);
-        }
-      );
-
-      callsConnection.on("AcceptCall", (response: any) => {
-        setIncomingCall(false);
-        setAcceptedCall(true);
-        setOpenOutgoingCallModal(false);
-      });
-
-      callsConnection.on("DeclineCall", (response: any) => {
-        setIncomingCall(false);
-        setOpenOutgoingCallModal(false);
-        toast.info(response, {
-          theme: "dark",
-        });
-      });
-    }
-  }, [callsConnection]);
-
-  const handleOpenOutgoingCallModal = () => {
-    setOpenOutgoingCallModal(true);
-  };
-
-  const setCalledUsername = (username: string) => {
-    setOutgoingCallUsername(username);
-  };
-
   if (isLoading) return <div>Loading...</div>;
 
   return (
     <>
       <ConversationSidebar
-        conversations={conversations}
+        conversations={filteredConversations}
         setSelectedConversation={handleSelectedConversation}
         currentUser={currentUser}
         openModal={handleOpenModal}
+        filterUserConversation={filterUserConversations}
       />
       <div className="flex flex-col flex-1 bg-[#1e1e1e]">
         <ConversationPanelHeader
           conversation={getSelectedConversation()}
           currentUser={currentUser}
-          callsConnection={callsConnection}
-          openOutgoingCallModal={handleOpenOutgoingCallModal}
-          setCalledUsername={setCalledUsername}
         />
-        {acceptedCall && <CallPanel user={currentUser} />}
         <Outlet />
       </div>
       <ConversationPanelMembers
@@ -195,25 +163,6 @@ const ConversationPanel = () => {
               hubConnection={connection}
             />
           }
-        />
-      )}
-      {openIncomingCallModal && (
-        <ModalOverlay
-          children={
-            <IncomingCall
-              callingUsername={callingUserName}
-              callingUserId={callingUserId}
-              callsConnection={callsConnection}
-              closeCallModal={handleCloseCallsModal}
-              toggleVoiceChatAreaForRecipient={handleToggleVoiceChatRecipient}
-            />
-          }
-        />
-      )}
-
-      {openOutgoingCallModal && (
-        <ModalOverlay
-          children={<OutgoingCall callingUsername={outgoingCallUsername} />}
         />
       )}
     </>

@@ -22,7 +22,9 @@ const UserSearchList: React.FC<Props> = ({
   const createConversation = async () => {
     try {
       const newConversationId = await createConversationRequest(recipient);
-      hubConnection.invoke("NewConversationEvent", newConversationId);
+      if (newConversationId) {
+        hubConnection.invoke("NewConversationEvent", newConversationId);
+      }
       closeModal();
       navigate(`/conversations/${newConversationId}`);
     } catch (error: any) {

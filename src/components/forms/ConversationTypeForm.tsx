@@ -54,15 +54,6 @@ const ConversationTypeForm: React.FC<Props> = ({
               value={message}
             />
           </div>
-
-          {/* <input
-            type="text"
-            onChange={handleMessage}
-            value={message}
-            placeholder="Send a message..."
-            className="w-full focus:outline-none mb-6 mx-8 mt-4 outline-none bg-[#1a1a1a] rounded-md 
-        text-zinc-300 p-4"
-          /> */}
           <button className="hidden" type="submit"></button>
         </form>
       </div>

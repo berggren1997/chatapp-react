@@ -1,23 +1,17 @@
 import { RxHamburgerMenu } from "react-icons/rx";
 import { ConversationResponse } from "../../types/conversations/conversationsTypes";
 import { FiPhoneCall } from "react-icons/fi";
-import { BsTrash, BsCameraVideo } from "react-icons/bs";
+import { BsTrash } from "react-icons/bs";
 import { useEffect, useState } from "react";
 
 interface Props {
   conversation: ConversationResponse | undefined;
   currentUser: string;
-  callsConnection: any;
-  openOutgoingCallModal: () => void;
-  setCalledUsername: (username: string) => void;
 }
 
 const ConversationPanelHeader: React.FC<Props> = ({
   conversation,
   currentUser,
-  callsConnection,
-  openOutgoingCallModal,
-  setCalledUsername,
 }) => {
   const [creator, setCreator] = useState({
     creator: "",
@@ -53,9 +47,7 @@ const ConversationPanelHeader: React.FC<Props> = ({
   }, [conversation, currentUser]);
 
   const handleCallUser = () => {
-    callsConnection.invoke("CallUser", recipient.recipientId);
-    openOutgoingCallModal();
-    setCalledUsername(recipient.recipient);
+    alert("soon to be added!");
   };
 
   return (
@@ -77,10 +69,10 @@ const ConversationPanelHeader: React.FC<Props> = ({
           {currentUser && conversation && (
             <div className="flex gap-6">
               <FiPhoneCall
+                title="Not yet implemented"
                 className="hover:cursor-pointer w-[25px] h-[22px]"
                 onClick={handleCallUser}
               />
-              <BsCameraVideo className="hover:cursor-pointer w-[25px] h-[22px]" />
               <BsTrash className="hover:cursor-pointer w-[25px] h-[22px]" />
               <RxHamburgerMenu className="block md:hidden w-[32px] h-[24px] hover:cursor-pointer" />
             </div>

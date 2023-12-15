@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
 import useSignalR from "../../hooks/useSignalR";
 import { RETRIEVE_MESSAGE_EVENT } from "../../constants/signalR";
+import { IoIosArrowUp } from "react-icons/io";
 
 const ConversationPanelFeed: React.FC = () => {
   const lastMessageRef = useRef<string>("");
@@ -91,9 +92,6 @@ const ConversationPanelFeed: React.FC = () => {
     }
   }, [hubConnection]);
 
-  // if (messages && messages.length === 0) return <div>ConversationPanel</div>;
-
-  // if (messages.length > 0)
   return (
     <>
       <div
@@ -103,12 +101,15 @@ const ConversationPanelFeed: React.FC = () => {
       >
         {/* check hasNextPage from the server, only display the button + span if hasNextPage = true */}
         {metaData.hasNext && (
-          <button
-            onClick={handleFetchMoreMessages}
-            className="w-full flex bg-[#2d2d2d] rounded-md mb-2"
-          >
-            <span className="text-[16px] text-slate-300 w-full">Load more</span>
-          </button>
+          <div className="w-full flex flex-col justify-center items-center">
+            <button
+              onClick={handleFetchMoreMessages}
+              className="flex flex-col items-center"
+            >
+              <IoIosArrowUp className="text-sm text-slate-300" />
+              <span className="text-sm text-slate-300">Load more</span>
+            </button>
+          </div>
         )}
         <div className="flex flex-col mt-3">
           {messages &&

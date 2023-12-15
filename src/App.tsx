@@ -7,7 +7,6 @@ import ConversationWrapperPage from "./pages/ConversationWrapperPage";
 import ConversationPanelFeed from "./components/conversations/ConversationPanelFeed";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import PeerTest from "./pages/PeerTest";
 
 const App = () => {
   return (
@@ -17,7 +16,6 @@ const App = () => {
           <Route path="/" element={<Navigate to="/conversations" replace />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
-          <Route path="temp" element={<PeerTest />} />
           <Route
             element={
               <AuthenticatedRoute children={<ConversationWrapperPage />} />
