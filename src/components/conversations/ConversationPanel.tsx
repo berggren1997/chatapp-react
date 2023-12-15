@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ConversationPanelHeader from "./ConversationPanelHeader";
 import { Outlet, useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
@@ -10,6 +10,7 @@ import ModalOverlay from "../modal/ModalOverlay";
 import CreateConversationContent from "../modal/CreateConversationContent";
 import useSignalR from "../../hooks/useSignalR";
 import { MessageResponse } from "../../types/messages/messageTypes";
+import SignalRContext, { SignalRProps } from "../../context/SignalRContext";
 
 const ConversationPanel = () => {
   const [selectedConversation, setSelectedConversation] =
@@ -26,8 +27,9 @@ const ConversationPanel = () => {
   const { id } = useParams();
   const [openModal, setOpenModal] = useState(false);
 
-  const connection = useSignalR("http://localhost:5247/conversationHub");
-  const messageConnection = useSignalR("http://localhost:5247/messageHub");
+  // const connection = useSignalR("http://localhost:5247/conversationHub");
+  // const messageConnection = useSignalR("http://localhost:5247/messageHub");
+  const { connections } = useContext(SignalRContext) ?? {};
 
   const handleSelectedConversation = (conversation: ConversationResponse) => {
     setSelectedConversation(conversation);
@@ -63,6 +65,8 @@ const ConversationPanel = () => {
           new Date(b.lastMessageDetails.sentAt).getTime() -
           new Date(a.lastMessageDetails.sentAt).getTime()
       );
+      // console.log("conv data: ", conversationData);
+
       setConversations(conversationData);
       setFilteredConversations(conversationData);
     } catch (error) {
@@ -104,22 +108,23 @@ const ConversationPanel = () => {
   }, []);
 
   useEffect(() => {
-    if (messageConnection) {
-      messageConnection.on(
+    if (connections?.messageHub) {
+      connections.messageHub.on(
         "OnMessageReceived",
         (msgResponse: MessageResponse) => {
-          console.log(msgResponse);
+          // console.log("do we get here?");
+          fetchUserConversations();
+          // console.log(msgResponse);
         }
       );
     }
-  }, []);
+  }, [connections?.messageHub]);
 
   useEffect(() => {
-    if (connection) {
-      connection.on(
+    if (connections?.conversationHub) {
+      connections.conversationHub.on(
         "NewConversationEvent",
         (conversation: ConversationResponse) => {
-          console.log("nu kom vi hit", conversation);
           setFilteredConversations((prevConversations) => [
             ...prevConversations,
             conversation,
@@ -131,7 +136,7 @@ const ConversationPanel = () => {
         }
       );
     }
-  }, [connection]);
+  }, [connections?.conversationHub]);
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -160,7 +165,7 @@ const ConversationPanel = () => {
           children={
             <CreateConversationContent
               closeModal={handleCloseModal}
-              hubConnection={connection}
+              hubConnection={connections?.conversationHub}
             />
           }
         />

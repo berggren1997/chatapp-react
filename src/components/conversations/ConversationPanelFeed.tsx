@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import React from "react";
 import ConversationTypeForm from "../forms/ConversationTypeForm";
 import { getMessagesRequest } from "../../api/messages/getMessages";
@@ -8,6 +8,7 @@ import { meRequest } from "../../api/auth/me";
 import useSignalR from "../../hooks/useSignalR";
 import { RETRIEVE_MESSAGE_EVENT } from "../../constants/signalR";
 import { IoIosArrowUp } from "react-icons/io";
+import SignalRContext from "../../context/SignalRContext";
 
 const ConversationPanelFeed: React.FC = () => {
   const lastMessageRef = useRef<string>("");
@@ -19,7 +20,8 @@ const ConversationPanelFeed: React.FC = () => {
   const [isFetchingMoreMessages, setIsFetchingMoreMessages] =
     useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const hubConnection = useSignalR("http://localhost:5247/messageHub");
+  // const hubConnection = useSignalR("http://localhost:5247/messageHub");
+  const { connections } = useContext(SignalRContext) ?? {};
 
   const fetchCurrentUser = async () => {
     const user = await meRequest();
@@ -84,13 +86,18 @@ const ConversationPanelFeed: React.FC = () => {
   }, [messages, isFetchingMoreMessages]);
 
   useEffect(() => {
-    if (hubConnection) {
-      hubConnection.on(RETRIEVE_MESSAGE_EVENT, (content: MessageResponse) => {
-        setMessages((prevMessages) => [...prevMessages, content]);
-        setIsFetchingMoreMessages(false);
-      });
+    if (connections?.messageHub) {
+      connections.messageHub.on(
+        RETRIEVE_MESSAGE_EVENT,
+        (content: MessageResponse) => {
+          if (id == content.conversationId) {
+            setMessages((prevMessages) => [...prevMessages, content]);
+            setIsFetchingMoreMessages(false);
+          }
+        }
+      );
     }
-  }, [hubConnection]);
+  }, [connections?.messageHub]);
 
   return (
     <>
@@ -151,7 +158,7 @@ const ConversationPanelFeed: React.FC = () => {
         </div>
       </div>
       <ConversationTypeForm
-        connection={hubConnection}
+        connection={connections?.messageHub}
         conversationId={id || ""}
       />
     </>
