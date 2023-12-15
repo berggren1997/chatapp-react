@@ -49,7 +49,7 @@ const ConversationTypeForm: React.FC<Props> = ({
             <input
               type="text"
               placeholder="Send a message.."
-              className="border-none focus:outline-none bg-transparent text-[#ccc]"
+              className="border-none focus:outline-none bg-transparent text-[#ccc] w-full"
               onChange={handleMessage}
               value={message}
             />

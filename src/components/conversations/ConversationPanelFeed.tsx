@@ -5,7 +5,6 @@ import { getMessagesRequest } from "../../api/messages/getMessages";
 import { MessageResponse } from "../../types/messages/messageTypes";
 import { useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
-import useSignalR from "../../hooks/useSignalR";
 import { RETRIEVE_MESSAGE_EVENT } from "../../constants/signalR";
 import { IoIosArrowUp } from "react-icons/io";
 import SignalRContext from "../../context/SignalRContext";
@@ -20,7 +19,6 @@ const ConversationPanelFeed: React.FC = () => {
   const [isFetchingMoreMessages, setIsFetchingMoreMessages] =
     useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  // const hubConnection = useSignalR("http://localhost:5247/messageHub");
   const { connections } = useContext(SignalRContext) ?? {};
 
   const fetchCurrentUser = async () => {
@@ -41,7 +39,6 @@ const ConversationPanelFeed: React.FC = () => {
         ) {
           setMessages(conversationMessages.messages);
           setMetaData(conversationMessages.metaData);
-          // setNextPageNumber(nextPageNumber + 1);
         } else {
           setMessages([]);
           setMetaData({});
@@ -87,17 +84,26 @@ const ConversationPanelFeed: React.FC = () => {
 
   useEffect(() => {
     if (connections?.messageHub) {
+      connections.messageHub.off(RETRIEVE_MESSAGE_EVENT);
+
       connections.messageHub.on(
         RETRIEVE_MESSAGE_EVENT,
         (content: MessageResponse) => {
-          if (id == content.conversationId) {
+          console.log("conversationId från url: ", id);
+          console.log("conversationId från signalR: ", content.conversationId);
+
+          if (id === content.conversationId) {
             setMessages((prevMessages) => [...prevMessages, content]);
             setIsFetchingMoreMessages(false);
           }
         }
       );
+      return () => {
+        // Avregistrera prenumerationen vid komponentens demontering eller innan `id` ändras
+        connections.messageHub?.off(RETRIEVE_MESSAGE_EVENT);
+      };
     }
-  }, [connections?.messageHub]);
+  }, [connections?.messageHub, id]);
 
   return (
     <>

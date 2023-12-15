@@ -34,12 +34,10 @@ const ConversationSidebar: React.FC<Props> = ({
 
   return (
     <div className="hidden md:flex flex-col h-full w-[300px] border-r-[1px] border-zinc-800 overflow-y-scroll">
-      {/* FLYTTA UNDERLIGGANDE DEL TILL EN EGEN KOMPONENT */}
       {/* conversation-item wrapper */}
       <div className="flex flex-col mt-8 gap-3">
         <div className="flex flex-col items-center justify-center mb-4">
           <div className="flex items-center justify-center">
-            {/* TODO: Lägg till sökfunktionalitet */}
             <input
               className="text-white bg-[#262626] p-3 focus:outline-none rounded-lg w-full mx-1 h-[38px] mb-3 text-sm"
               type="text"
@@ -84,7 +82,7 @@ const ConversationSidebar: React.FC<Props> = ({
                         {conversation.lastMessageDetails?.message?.length > 10
                           ? `${conversation.lastMessageDetails.message.substring(
                               0,
-                              20
+                              9
                             )}...`
                           : conversation.lastMessageDetails?.message}
                       </span>
