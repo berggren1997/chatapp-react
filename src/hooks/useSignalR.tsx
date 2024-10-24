@@ -1,4 +1,5 @@
 import {
+  HubConnection,
   HubConnectionBuilder,
   JsonHubProtocol,
   LogLevel,
@@ -6,7 +7,7 @@ import {
 import { useEffect, useRef } from "react";
 
 const useSignalR = (url: string) => {
-  const connectionRef = useRef<any>();
+  const connectionRef = useRef<HubConnection>();
 
   useEffect(() => {
     const hubConnection = new HubConnectionBuilder()

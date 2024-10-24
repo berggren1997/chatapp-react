@@ -114,7 +114,7 @@ const ConversationPanel = () => {
         (msgResponse: MessageResponse) => {
           // console.log("do we get here?");
           fetchUserConversations();
-          // console.log(msgResponse);
+          console.log(msgResponse);
         }
       );
     }
@@ -122,6 +122,8 @@ const ConversationPanel = () => {
 
   useEffect(() => {
     if (connections?.conversationHub) {
+      // connections.conversationHub.off("NewConversationsEvent");
+
       connections.conversationHub.on(
         "NewConversationEvent",
         (conversation: ConversationResponse) => {
@@ -135,6 +137,11 @@ const ConversationPanel = () => {
           ]);
         }
       );
+
+      // return () => {
+      //   // Avregistrera prenumerationen vid komponentens demontering eller innan `id` ändras
+      //   connections.messageHub?.off("NewConversationEvent");
+      // };
     }
   }, [connections?.conversationHub]);
 

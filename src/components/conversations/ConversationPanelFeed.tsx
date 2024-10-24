@@ -3,7 +3,7 @@ import React from "react";
 import ConversationTypeForm from "../forms/ConversationTypeForm";
 import { getMessagesRequest } from "../../api/messages/getMessages";
 import { MessageResponse } from "../../types/messages/messageTypes";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { meRequest } from "../../api/auth/me";
 import { RETRIEVE_MESSAGE_EVENT } from "../../constants/signalR";
 import { IoIosArrowUp } from "react-icons/io";
@@ -11,6 +11,7 @@ import SignalRContext from "../../context/SignalRContext";
 
 const ConversationPanelFeed: React.FC = () => {
   const lastMessageRef = useRef<string>("");
+  const navigate = useNavigate();
   const [messages, setMessages] = useState<MessageResponse[]>([]);
   const { id } = useParams();
   const [username, setUsername] = useState("");
@@ -42,6 +43,8 @@ const ConversationPanelFeed: React.FC = () => {
         } else {
           setMessages([]);
           setMetaData({});
+          // TODO: Kika på denna
+          navigate("/conversations");
         }
         // setNextPageNumber(nextPageNumber + 1);
       } catch (error) {

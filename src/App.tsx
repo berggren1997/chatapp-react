@@ -7,6 +7,7 @@ import ConversationWrapperPage from "./pages/ConversationWrapperPage";
 import ConversationPanelFeed from "./components/conversations/ConversationPanelFeed";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SettingsPage from "./pages/SettingsPage";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
             <Route path="conversations" element={<ConversationPanel />}>
               <Route path=":id" element={<ConversationPanelFeed />} />
             </Route>
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
         </Routes>
         <ToastContainer />

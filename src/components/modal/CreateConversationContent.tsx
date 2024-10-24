@@ -38,6 +38,7 @@ const CreateConversationContent: React.FC<Props> = ({
         <input
           onChange={(e) => setUsername(e.target.value)}
           value={username}
+          autoFocus
           className="w-full p-3 bg-inherit border-[1px] border-zinc-700 rounded-md focus:outline-none"
           type="text"
           placeholder="Search username"

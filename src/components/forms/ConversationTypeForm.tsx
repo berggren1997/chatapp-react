@@ -3,6 +3,7 @@ import { BsPlusCircle } from "react-icons/bs";
 import { useState } from "react";
 import { SEND_MESSAGE_EVENT } from "../../constants/signalR";
 import EmojiPicker, { EmojiClickData } from "emoji-picker-react";
+import { AiOutlineSend } from "react-icons/ai";
 
 interface Props {
   connection: any;
@@ -49,9 +50,14 @@ const ConversationTypeForm: React.FC<Props> = ({
             <input
               type="text"
               placeholder="Send a message.."
+              autoFocus
               className="border-none focus:outline-none bg-transparent text-[#ccc] w-full"
               onChange={handleMessage}
               value={message}
+            />
+            <AiOutlineSend
+              className="w-5 h-5 hover:cursor-pointer"
+              onClick={handleSubmit}
             />
           </div>
           <button className="hidden" type="submit"></button>
